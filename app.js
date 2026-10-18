@@ -441,10 +441,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   /* ==========================================================
-     6. QUICK DATE SELECTION & RESERVATION DESK
+     6. RESERVATION DESK
      ========================================================== */
   const resDateInput = document.getElementById('resDate');
-  const qDateBtns = document.querySelectorAll('.q-date-btn');
 
   function formatDateToISO(date) {
     const y = date.getFullYear();
@@ -458,40 +457,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (resDateInput) {
     resDateInput.value = formatDateToISO(today);
     resDateInput.min = formatDateToISO(today);
-  }
-
-  qDateBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      qDateBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      const offset = btn.getAttribute('data-date-offset');
-      const weekend = btn.getAttribute('data-date-weekend');
-      const targetDate = new Date();
-
-      if (offset !== null) {
-        targetDate.setDate(targetDate.getDate() + parseInt(offset, 10));
-      } else if (weekend === 'sat') {
-        const day = targetDate.getDay();
-        const diff = (6 - day + 7) % 7 || 7;
-        targetDate.setDate(targetDate.getDate() + diff);
-      } else if (weekend === 'sun') {
-        const day = targetDate.getDay();
-        const diff = (7 - day) % 7 || 7;
-        targetDate.setDate(targetDate.getDate() + diff);
-      }
-
-      if (resDateInput) {
-        resDateInput.value = formatDateToISO(targetDate);
-      }
-    });
-  });
-
-  if (resDateInput) {
-    resDateInput.addEventListener('change', () => {
-      // Clear quick date active states when user custom picks a date
-      qDateBtns.forEach(b => b.classList.remove('active'));
-    });
   }
 
 
@@ -568,10 +533,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (resDateInput) resDateInput.value = formatDateToISO(new Date());
       const radio2 = document.querySelector('input[name="resGuests"][value="2"]');
       if (radio2) radio2.checked = true;
-      qDateBtns.forEach(b => {
-        if (b.getAttribute('data-date-offset') === '0') b.classList.add('active');
-        else b.classList.remove('active');
-      });
     });
   }
 

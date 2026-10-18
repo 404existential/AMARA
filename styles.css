@@ -533,13 +533,14 @@ button, input, select, textarea {
    ========================================================== */
 .hero-section.gravity-hero {
   position: relative;
-  min-height: 94vh;
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   padding-top: calc(var(--header-height) + 10px);
-  padding-bottom: 30px;
+  padding-bottom: 20px;
   background: radial-gradient(circle at 50% 35%, #fdfbf7 0%, #f7f1e6 55%, #ece1cf 100%);
 }
 
@@ -676,50 +677,10 @@ button, input, select, textarea {
   line-height: 1.1;
   font-weight: 500;
   color: var(--text-main);
-  margin-bottom: 16px;
+  margin-bottom: 28px;
   max-width: 840px;
   opacity: 1 !important;
   visibility: visible !important;
-}
-
-.hero-subtitle {
-  max-width: 600px;
-  font-size: clamp(0.95rem, 1.25vw, 1.12rem);
-  color: var(--text-body);
-  margin-bottom: 28px;
-  line-height: 1.6;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-.gravity-interactive-hint {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--accent-terracotta);
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(8px);
-  padding: 8px 20px;
-  border-radius: 30px;
-  margin-top: 28px;
-  box-shadow: 0 4px 16px rgba(51, 36, 27, 0.06);
-  border: 1px solid var(--border-medium);
-  pointer-events: auto;
-  opacity: 0.9;
-  transition: all var(--transition-fast);
-}
-
-.gravity-interactive-hint i {
-  color: var(--accent-crema);
-  font-size: 0.82rem;
-  animation: sparkleTwinkle 2s infinite alternate;
-}
-
-@keyframes sparkleTwinkle {
-  0% { transform: scale(0.9) rotate(0deg); opacity: 0.7; }
-  100% { transform: scale(1.25) rotate(180deg); opacity: 1; }
 }
 
 .hero-cta-group {
@@ -940,37 +901,6 @@ button, input, select, textarea {
 }
 
 .g-pill input:checked + span {
-  background: var(--accent-coffee);
-  color: #fff;
-  border-color: var(--accent-coffee);
-}
-
-/* Quick Date Pills */
-.quick-date-pills {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-}
-
-.q-date-btn {
-  padding: 8px 6px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  border: 1px solid var(--border-medium);
-  border-radius: 6px;
-  background: var(--bg-body);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  text-align: center;
-}
-
-.q-date-btn:hover {
-  border-color: var(--accent-coffee);
-  color: var(--text-main);
-}
-
-.q-date-btn.active {
   background: var(--accent-coffee);
   color: #fff;
   border-color: var(--accent-coffee);
@@ -1367,10 +1297,6 @@ button, input, select, textarea {
 
   .section {
     padding: 68px 0;
-  }
-
-  .quick-date-pills {
-    grid-template-columns: repeat(2, 1fr);
   }
 
   .res-row-2 {
