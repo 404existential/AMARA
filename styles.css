@@ -570,11 +570,25 @@ button, input, select, textarea {
   padding: 30px 0 40px;
 }
 
+@keyframes heroContentFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .hero-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  opacity: 1 !important;
+  visibility: visible !important;
+  animation: heroContentFadeIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .hero-brand-pill {
@@ -584,12 +598,14 @@ button, input, select, textarea {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--accent-terracotta);
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.85);
   border: 1px solid var(--border-medium);
   padding: 6px 16px;
   border-radius: 30px;
   margin-bottom: 16px;
   box-shadow: var(--shadow-sm);
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .hero-title {
@@ -599,6 +615,8 @@ button, input, select, textarea {
   color: var(--text-main);
   margin-bottom: 14px;
   max-width: 820px;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .hero-subtitle {
@@ -607,6 +625,8 @@ button, input, select, textarea {
   color: var(--text-body);
   margin-bottom: 26px;
   line-height: 1.6;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .hero-cta-group {
@@ -616,6 +636,8 @@ button, input, select, textarea {
   flex-wrap: wrap;
   justify-content: center;
   margin-bottom: 24px;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .hero-btn {
@@ -633,6 +655,8 @@ button, input, select, textarea {
   position: relative;
   margin-top: 6px;
   cursor: pointer;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 #coffeePourCanvas {
@@ -641,6 +665,8 @@ button, input, select, textarea {
   height: 260px;
   max-width: 90vw;
   filter: drop-shadow(0 10px 24px rgba(51, 36, 27, 0.08));
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 /* ==========================================================

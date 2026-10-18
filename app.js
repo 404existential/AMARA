@@ -13,8 +13,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const preloaderProgress = document.getElementById('preloaderProgress');
   const PRELOADER_DURATION = 1500; // Exact 1.5s as requested
   const preloaderStartTime = performance.now();
+  let preloaderDismissed = false;
+
+  function dismissPreloader() {
+    if (preloaderDismissed) return;
+    preloaderDismissed = true;
+    if (preloaderProgress) preloaderProgress.style.width = '100%';
+    if (preloader) {
+      preloader.classList.add('fade-out');
+      setTimeout(() => {
+        preloader.style.display = 'none';
+      }, 350);
+    }
+  }
 
   function animatePreloader(currentTime) {
+    if (preloaderDismissed) return;
     const elapsed = currentTime - preloaderStartTime;
     const progress = Math.min((elapsed / PRELOADER_DURATION) * 100, 100);
 
@@ -25,19 +39,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (elapsed < PRELOADER_DURATION) {
       requestAnimationFrame(animatePreloader);
     } else {
-      if (preloaderProgress) preloaderProgress.style.width = '100%';
-      setTimeout(() => {
-        if (preloader) {
-          preloader.classList.add('fade-out');
-          setTimeout(() => {
-            preloader.style.display = 'none';
-          }, 400);
-        }
-      }, 50);
+      dismissPreloader();
     }
   }
 
   requestAnimationFrame(animatePreloader);
+
+  // Absolute safety fallback timer: guarantees removal at 1.5s regardless of RAF
+  setTimeout(dismissPreloader, PRELOADER_DURATION);
 
 
   /* ==========================================================
@@ -450,8 +459,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const driftX = Math.sin(time * 1.5 + p.phase + p.y * 0.04) * 8;
 
         ctx.save();
-        ctx.fillStyle = `rgba(255, 255, 255, ${steamAlpha})`;
-        ctx.filter = 'blur(6px)';
+        const steamGrad = ctx.createRadialGradient(p.x + driftX, p.y, 0, p.x + driftX, p.y, p.size);
+        steamGrad.addColorStop(0, `rgba(255, 255, 255, ${steamAlpha * 1.5})`);
+        steamGrad.addColorStop(0.5, `rgba(255, 255, 255, ${steamAlpha * 0.7})`);
+        steamGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        ctx.fillStyle = steamGrad;
         ctx.beginPath();
         ctx.arc(p.x + driftX, p.y, p.size, 0, Math.PI * 2);
         ctx.fill();
@@ -735,14 +747,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { passive: true });
 
   const revealElements = document.querySelectorAll('.reveal-fade, .reveal-left, .reveal-right');
-  const observer = new IntersectionObserver((entries, obs) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('revealed');
-        obs.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.05, rootMargin: '0px 0px 60px 0px' });
 
-  revealElements.forEach(el => observer.observe(el));
+    revealElements.forEach(el => observer.observe(el));
+  } else {
+    revealElements.forEach(el => el.classList.add('revealed'));
+  }
 });
