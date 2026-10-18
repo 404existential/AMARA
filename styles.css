@@ -636,10 +636,10 @@ button, input, select, textarea {
 
 #coffeePourCanvas {
   display: block;
-  width: 300px;
-  height: 260px;
-  max-width: 90vw;
-  filter: drop-shadow(0 8px 18px rgba(51, 36, 27, 0.08));
+  width: 380px;
+  height: 280px;
+  max-width: 95vw;
+  filter: drop-shadow(0 10px 24px rgba(51, 36, 27, 0.09));
 }
 
 /* ==========================================================
