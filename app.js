@@ -41,27 +41,427 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   /* ==========================================================
-     2. HERO SHOWCASE 3D PARALLAX INTERACTION
+     2. CONTINUOUS FLUID COFFEE EXTRACTION (SOMETHING POURING ONLY)
      ========================================================== */
-  const heroCard = document.querySelector('.hero-showcase-card');
-  if (heroCard) {
-    heroCard.addEventListener('mousemove', (e) => {
-      const rect = heroCard.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      const rotateX = -(y / rect.height) * 8;
-      const rotateY = (x / rect.width) * 8;
-      heroCard.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  const canvas = document.getElementById('coffeePourCanvas');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const baseW = 300;
+    const baseH = 260;
+
+    // Set high-DPI canvas resolution
+    canvas.width = baseW * dpr;
+    canvas.height = baseH * dpr;
+    ctx.scale(dpr, dpr);
+
+    let time = 0;
+    let ripples = [];
+    let droplets = [];
+    let steamParticles = [];
+    const centerX = 150;
+    const cupSurfaceY = 154;
+
+    // Initialize steam particles
+    for (let i = 0; i < 7; i++) {
+      steamParticles.push({
+        x: centerX - 18 + Math.random() * 36,
+        y: cupSurfaceY - 10 - Math.random() * 75,
+        vy: 0.45 + Math.random() * 0.45,
+        phase: Math.random() * Math.PI * 2,
+        life: Math.random(),
+        maxLife: 0.8 + Math.random() * 0.4,
+        size: 9 + Math.random() * 12
+      });
+    }
+
+    // Add concentric ripples
+    function spawnRipple() {
+      ripples.push({
+        r: 3,
+        maxR: 38 + Math.random() * 8,
+        alpha: 0.85,
+        speed: 0.55 + Math.random() * 0.2
+      });
+    }
+
+    // Add active micro-droplets
+    function spawnDroplet() {
+      if (droplets.length < 5) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 1.2 + Math.random() * 1.8;
+        droplets.push({
+          x: centerX,
+          y: cupSurfaceY,
+          vx: Math.cos(angle) * (speed * 0.8),
+          vy: -Math.abs(Math.sin(angle) * speed) - 1.2,
+          radius: 1.1 + Math.random() * 1.3,
+          alpha: 1,
+          gravity: 0.12
+        });
+      }
+    }
+
+    // Interactive ripple boost on click / tap
+    canvas.addEventListener('click', () => {
+      for (let i = 0; i < 3; i++) {
+        setTimeout(spawnRipple, i * 75);
+      }
+      for (let i = 0; i < 4; i++) {
+        spawnDroplet();
+      }
     });
 
-    heroCard.addEventListener('mouseleave', () => {
-      heroCard.style.transition = 'transform 0.5s ease';
-      heroCard.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)';
-    });
+    let rippleTimer = 0;
+    let dropletTimer = 0;
 
-    heroCard.addEventListener('mouseenter', () => {
-      heroCard.style.transition = 'none';
-    });
+    function renderCoffeePour() {
+      time += 0.035;
+      rippleTimer++;
+      dropletTimer++;
+
+      if (rippleTimer % 18 === 0) spawnRipple();
+      if (dropletTimer % 24 === 0) spawnDroplet();
+
+      ctx.clearRect(0, 0, baseW, baseH);
+
+      // --- 1. AMBIENT BACKLIGHT GLOW ---
+      const glowGrad = ctx.createRadialGradient(centerX, 150, 10, centerX, 150, 120);
+      glowGrad.addColorStop(0, 'rgba(217, 160, 91, 0.12)');
+      glowGrad.addColorStop(1, 'rgba(248, 245, 239, 0)');
+      ctx.fillStyle = glowGrad;
+      ctx.beginPath();
+      ctx.arc(centerX, 150, 120, 0, Math.PI * 2);
+      ctx.fill();
+
+      // ==========================================
+      // --- 2. CERAMIC CUP & SAUCER (CENTERED) ---
+      // ==========================================
+
+      // Saucer Ambient Shadow
+      ctx.fillStyle = 'rgba(51, 36, 27, 0.08)';
+      ctx.beginPath();
+      ctx.ellipse(centerX, 238, 92, 11, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Saucer Outer Ceramic Rim
+      const saucerGrad = ctx.createLinearGradient(centerX - 90, 230, centerX + 90, 230);
+      saucerGrad.addColorStop(0, '#e5ded2');
+      saucerGrad.addColorStop(0.2, '#faf7f2');
+      saucerGrad.addColorStop(0.5, '#ffffff');
+      saucerGrad.addColorStop(0.8, '#f3ede2');
+      saucerGrad.addColorStop(1, '#dbd1c1');
+
+      ctx.fillStyle = saucerGrad;
+      ctx.strokeStyle = '#d6ccbe';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.ellipse(centerX, 230, 86, 14, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Saucer Inner Well Ring
+      ctx.strokeStyle = 'rgba(184, 94, 53, 0.25)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.ellipse(centerX, 230, 56, 9, 0, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Cup Handle on Right Side
+      ctx.lineWidth = 7;
+      ctx.strokeStyle = '#ebd9c3';
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.arc(centerX + 56, 185, 17, -Math.PI * 0.4, Math.PI * 0.55);
+      ctx.stroke();
+
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = '#faf7f2';
+      ctx.beginPath();
+      ctx.arc(centerX + 56, 185, 17, -Math.PI * 0.35, Math.PI * 0.5);
+      ctx.stroke();
+
+      // Cup Ceramic Body
+      const cupGrad = ctx.createLinearGradient(centerX - 60, 152, centerX + 60, 152);
+      cupGrad.addColorStop(0, '#ded4c4');
+      cupGrad.addColorStop(0.15, '#f5efe4');
+      cupGrad.addColorStop(0.5, '#ffffff');
+      cupGrad.addColorStop(0.85, '#ede6da');
+      cupGrad.addColorStop(1, '#d8cdbb');
+
+      ctx.fillStyle = cupGrad;
+      ctx.strokeStyle = '#d0c4b2';
+      ctx.lineWidth = 1;
+
+      ctx.beginPath();
+      ctx.moveTo(centerX - 56, 152);
+      ctx.quadraticCurveTo(centerX - 54, 192, centerX - 32, 222);
+      ctx.lineTo(centerX + 32, 222);
+      ctx.quadraticCurveTo(centerX + 54, 192, centerX + 56, 152);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Cup Base Ellipse
+      ctx.fillStyle = '#dbd0bf';
+      ctx.beginPath();
+      ctx.ellipse(centerX, 222, 32, 6, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Cup Outer Ceramic Rim
+      ctx.fillStyle = '#faf7f2';
+      ctx.strokeStyle = '#b85e35';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.ellipse(centerX, 152, 56, 18, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Liquid Surface with Inner Clipping
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(centerX, cupSurfaceY, 52, 15.5, 0, 0, Math.PI * 2);
+      ctx.clip();
+
+      // Deep rich espresso base
+      const coffeeGrad = ctx.createRadialGradient(centerX, cupSurfaceY, 4, centerX, cupSurfaceY, 50);
+      coffeeGrad.addColorStop(0, '#5a3118');
+      coffeeGrad.addColorStop(0.35, '#3a1e12');
+      coffeeGrad.addColorStop(0.75, '#26130b');
+      coffeeGrad.addColorStop(1, '#1b0d07');
+      ctx.fillStyle = coffeeGrad;
+      ctx.fillRect(centerX - 60, cupSurfaceY - 20, 120, 40);
+
+      // Crema foam outer perimeter ring
+      const cremaGrad = ctx.createRadialGradient(centerX, cupSurfaceY, 20, centerX, cupSurfaceY, 50);
+      cremaGrad.addColorStop(0, 'rgba(197, 131, 63, 0)');
+      cremaGrad.addColorStop(0.7, 'rgba(217, 160, 91, 0.45)');
+      cremaGrad.addColorStop(0.95, 'rgba(217, 160, 91, 0.85)');
+      cremaGrad.addColorStop(1, 'rgba(150, 85, 35, 0.95)');
+      ctx.fillStyle = cremaGrad;
+      ctx.fillRect(centerX - 60, cupSurfaceY - 20, 120, 40);
+
+      // Swirling crema marbling textures
+      for (let s = 0; s < 3; s++) {
+        ctx.strokeStyle = `rgba(224, 172, 108, ${0.25 - s * 0.05})`;
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        const swirlAngle = time * 0.4 + s * (Math.PI * 0.65);
+        ctx.ellipse(
+          centerX + Math.cos(swirlAngle) * 9,
+          cupSurfaceY + Math.sin(swirlAngle) * 3,
+          26 + s * 9,
+          7 + s * 2.5,
+          swirlAngle * 0.2,
+          0,
+          Math.PI * 2
+        );
+        ctx.stroke();
+      }
+
+      // Concentric Expanding Wave Ripples
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        const rip = ripples[i];
+        rip.r += rip.speed;
+        rip.alpha -= 0.018;
+
+        if (rip.alpha <= 0 || rip.r >= rip.maxR) {
+          ripples.splice(i, 1);
+          continue;
+        }
+
+        ctx.strokeStyle = `rgba(255, 230, 185, ${rip.alpha * 0.85})`;
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.ellipse(centerX, cupSurfaceY, rip.r, rip.r * 0.32, 0, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.strokeStyle = `rgba(58, 30, 18, ${rip.alpha * 0.5})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.ellipse(centerX, cupSurfaceY + 0.5, rip.r * 0.92, rip.r * 0.29, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // Froth micro-bubbles
+      for (let b = 0; b < 6; b++) {
+        const bAngle = time * 0.25 + (b * Math.PI / 3);
+        const bx = centerX + Math.cos(bAngle) * (14 + Math.sin(time + b) * 3);
+        const by = cupSurfaceY + Math.sin(bAngle) * (4.5 + Math.cos(time + b) * 1);
+        ctx.fillStyle = 'rgba(235, 195, 140, 0.75)';
+        ctx.beginPath();
+        ctx.arc(bx, by, 1.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.restore(); // Restore cup clipping
+
+
+      // =======================================================
+      // --- 3. ARCHITECTURAL EXTRACTION GROUP HEAD (TOP CENTER) ---
+      // =======================================================
+      // Brushed Stainless Steel & Brass extraction group flush at top
+      ctx.save();
+
+      // Top Mounting Collar
+      const groupGrad = ctx.createLinearGradient(centerX - 42, 10, centerX + 42, 10);
+      groupGrad.addColorStop(0, '#2c221b');
+      groupGrad.addColorStop(0.2, '#5a4639');
+      groupGrad.addColorStop(0.5, '#8c705c');
+      groupGrad.addColorStop(0.8, '#5a4639');
+      groupGrad.addColorStop(1, '#2c221b');
+
+      ctx.fillStyle = groupGrad;
+      ctx.fillRect(centerX - 40, 6, 80, 10);
+
+      // Polished Brass Accent Ring
+      const brassCollar = ctx.createLinearGradient(centerX - 40, 16, centerX + 40, 16);
+      brassCollar.addColorStop(0, '#8c582f');
+      brassCollar.addColorStop(0.3, '#d9a05b');
+      brassCollar.addColorStop(0.7, '#f0c68d');
+      brassCollar.addColorStop(1, '#7a4a25');
+
+      ctx.fillStyle = brassCollar;
+      ctx.beginPath();
+      ctx.ellipse(centerX, 16, 38, 4.5, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Micro-mesh Shower Screen Underneath
+      ctx.fillStyle = '#18100b';
+      ctx.beginPath();
+      ctx.ellipse(centerX, 16, 34, 3.6, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Fluid Extraction Gathering Cone
+      const coneGrad = ctx.createLinearGradient(centerX - 10, 16, centerX + 10, 26);
+      coneGrad.addColorStop(0, '#5a3118');
+      coneGrad.addColorStop(0.5, '#8c4820');
+      coneGrad.addColorStop(1, '#4a2512');
+
+      ctx.fillStyle = coneGrad;
+      ctx.beginPath();
+      ctx.moveTo(centerX - 12, 16);
+      ctx.quadraticCurveTo(centerX - 6, 22, centerX - 3, 26);
+      ctx.lineTo(centerX + 3, 26);
+      ctx.quadraticCurveTo(centerX + 6, 22, centerX + 12, 16);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.restore();
+
+
+      // ==========================================
+      // --- 4. CONTINUOUS FLUID COFFEE STREAM ---
+      // ==========================================
+      // The stream flows continuously from gathering cone (y=26) down to cup (y=154)
+      const startX = centerX;
+      const startY = 26;
+      const targetX = centerX;
+      const targetY = cupSurfaceY;
+      const streamSteps = 24;
+
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      // Sinuous fluid stream path
+      ctx.beginPath();
+      for (let i = 0; i <= streamSteps; i++) {
+        const progress = i / streamSteps;
+        const currY = startY + (targetY - startY) * progress;
+        // Natural fluid wave oscillation
+        const wave = Math.sin(currY * 0.055 - time * 8) * 1.5 + Math.cos(currY * 0.025 + time * 4) * 0.6;
+        const currX = startX + wave;
+
+        if (i === 0) {
+          ctx.moveTo(currX, currY);
+        } else {
+          ctx.lineTo(currX, currY);
+        }
+      }
+
+      // Base stream shadow/depth
+      ctx.strokeStyle = '#2b140b';
+      ctx.lineWidth = 5.4;
+      ctx.stroke();
+
+      // Amber liquid core
+      ctx.strokeStyle = '#7c4320';
+      ctx.lineWidth = 3.8;
+      ctx.stroke();
+
+      // Shimmering Golden Crema Highlight rushing down at 60fps
+      ctx.strokeStyle = '#e2ab69';
+      ctx.lineWidth = 1.8;
+      ctx.setLineDash([9, 14]);
+      ctx.lineDashOffset = -time * 110; // High-velocity fluid extraction
+      ctx.stroke();
+      ctx.setLineDash([]); // Reset dash
+
+
+      // ==========================================
+      // --- 5. IMPACT SPLASH & MICRO DROPLETS ---
+      // ==========================================
+      const frothPulse = Math.sin(time * 12) * 1.2;
+      const frothGrad = ctx.createRadialGradient(centerX, cupSurfaceY, 1, centerX, cupSurfaceY, 8 + frothPulse);
+      frothGrad.addColorStop(0, '#ffe8c2');
+      frothGrad.addColorStop(0.5, '#c5833f');
+      frothGrad.addColorStop(1, 'rgba(184, 94, 53, 0)');
+      ctx.fillStyle = frothGrad;
+      ctx.beginPath();
+      ctx.ellipse(centerX, cupSurfaceY, 9 + frothPulse, 4.2 + frothPulse * 0.4, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Active Droplets bouncing up
+      for (let d = droplets.length - 1; d >= 0; d--) {
+        const drop = droplets[d];
+        drop.x += drop.vx;
+        drop.y += drop.vy;
+        drop.vy += drop.gravity;
+        drop.alpha -= 0.028;
+
+        if (drop.alpha <= 0 || drop.y > cupSurfaceY + 6) {
+          droplets.splice(d, 1);
+          continue;
+        }
+
+        ctx.fillStyle = `rgba(217, 160, 91, ${drop.alpha})`;
+        ctx.beginPath();
+        ctx.arc(drop.x, drop.y, drop.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+
+      // ==========================================
+      // --- 6. RISING STEAM PLUMES FROM CUP ---
+      // ==========================================
+      steamParticles.forEach(p => {
+        p.y -= p.vy;
+        p.life += 0.008;
+
+        if (p.life >= p.maxLife || p.y < 30) {
+          p.x = centerX - 16 + Math.random() * 32;
+          p.y = cupSurfaceY - 5;
+          p.life = 0;
+          p.vy = 0.45 + Math.random() * 0.45;
+          p.size = 9 + Math.random() * 12;
+        }
+
+        const steamAlpha = Math.sin((p.life / p.maxLife) * Math.PI) * 0.16;
+        const driftX = Math.sin(time * 1.5 + p.phase + p.y * 0.04) * 8;
+
+        ctx.save();
+        ctx.fillStyle = `rgba(255, 255, 255, ${steamAlpha})`;
+        ctx.filter = 'blur(6px)';
+        ctx.beginPath();
+        ctx.arc(p.x + driftX, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+
+      requestAnimationFrame(renderCoffeePour);
+    }
+
+    renderCoffeePour();
   }
 
 

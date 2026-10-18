@@ -94,79 +94,37 @@
     </div>
   </aside>
 
-  <!-- ================= HERO SECTION (CINEMATIC DUAL SHOWCASE) ================= -->
+  <!-- ================= HERO SECTION (CENTERED STYLE WITH POURING ONLY) ================= -->
   <section id="hero" class="hero-section">
-    <div class="hero-ambient-glow"></div>
+    <div class="hero-bg-container">
+      <img src="assets/images/cafe-interior.jpg" alt="Café interior" class="hero-bg-image">
+      <div class="hero-overlay"></div>
+    </div>
 
-    <div class="container hero-container">
-      <div class="hero-split-layout">
-        
-        <!-- Left: Editorial Content -->
-        <div class="hero-copy-col">
-          <div class="hero-brand-pill reveal-fade">
-            <span>Coffee Sanctuary & Slow Bakes</span>
-          </div>
-
-          <h1 class="hero-title reveal-fade delay-1">
-            Where morning light meets <br>
-            <span class="title-italic">Craft Coffee & Slow Bakes</span>
-          </h1>
-
-          <p class="hero-subtitle reveal-fade delay-2">
-            Hand-selected single-estate beans from Chikmagalur and Coorg, slow cold-fermented butter viennoiserie, and tranquil sunlit courtyards on 12th Main, Indiranagar.
-          </p>
-
-          <div class="hero-cta-group reveal-fade delay-2">
-            <a href="#menu" class="btn btn-primary hero-btn">Explore Menu</a>
-            <a href="#reserve" class="btn btn-outline hero-btn">Reserve a Table</a>
-          </div>
-
-          <div class="hero-sanctuary-meta reveal-fade delay-3">
-            <div class="sanctuary-meta-item">
-              <i class="fa-solid fa-location-dot"></i>
-              <span>12th Main, Indiranagar</span>
-            </div>
-            <span class="meta-dot">·</span>
-            <div class="sanctuary-meta-item">
-              <i class="fa-regular fa-clock"></i>
-              <span>7:30 AM – 10:30 PM Daily</span>
-            </div>
-            <span class="meta-dot">·</span>
-            <div class="sanctuary-meta-item">
-              <i class="fa-solid fa-mug-hot"></i>
-              <span>Direct Estate Trade</span>
-            </div>
-          </div>
+    <div class="hero-content-wrapper">
+      <div class="container hero-container">
+        <div class="hero-brand-pill reveal-fade">
+          <span>Coffee Sanctuary & Slow Bakes</span>
         </div>
 
-        <!-- Right: Masterpiece Visual Showcase -->
-        <div class="hero-visual-col reveal-right">
-          <div class="hero-showcase-card">
-            <div class="hero-image-wrapper">
-              <img src="assets/images/hero-showcase.jpg" alt="Artisanal flat white coffee and golden butter croissant in morning sunlight" class="hero-featured-img">
-              <div class="hero-image-shine"></div>
-            </div>
+        <h1 class="hero-title reveal-fade delay-1">
+          A Sunlit Sanctuary of <br>
+          <span class="title-italic">Craft Coffee & Slow Bakes</span>
+        </h1>
 
-            <!-- Floating Glass Badge: Coffee Extraction -->
-            <div class="floating-badge badge-coffee">
-              <span class="badge-emoji">☕</span>
-              <div class="badge-info">
-                <span class="badge-heading">Estate Extraction</span>
-                <span class="badge-sub">Balur Washed Lot · Roasted Fresh</span>
-              </div>
-            </div>
+        <p class="hero-subtitle reveal-fade delay-2">
+          Hand-roasted hill coffees, warm morning croissants, and tranquil spaces in Bengaluru.
+        </p>
 
-            <!-- Floating Glass Badge: Slow Bakehouse -->
-            <div class="floating-badge badge-bakes">
-              <span class="badge-emoji">🥐</span>
-              <div class="badge-info">
-                <span class="badge-heading">Morning Viennoiserie</span>
-                <span class="badge-sub">Cold-Fermented Sourdough Butter</span>
-              </div>
-            </div>
-          </div>
+        <div class="hero-cta-group reveal-fade delay-2">
+          <a href="#menu" class="btn btn-primary hero-btn">Explore Menu</a>
+          <a href="#reserve" class="btn btn-outline hero-btn">Reserve a Table</a>
         </div>
 
+        <!-- Pure Coffee Pouring Simulation (Centered Extraction into Ceramic Cup) -->
+        <div class="canvas-pour-container reveal-fade delay-3">
+          <canvas id="coffeePourCanvas" width="300" height="260" aria-label="Craft coffee pouring simulation"></canvas>
+        </div>
       </div>
     </div>
   </section>
