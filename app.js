@@ -302,9 +302,9 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.restore(); // Restore from cup clipping
 
       // --- 6. CONTINUOUS FLUID COFFEE STREAM ---
-      // The stream flows continuously from the dripper (y=15) down into the cup (y=147)
-      const startX = 150;
-      const startY = 15;
+      // The stream flows continuously from the gooseneck spout (x:146, y:28) down into the cup (x:150, y:147)
+      const startX = 146;
+      const startY = 28;
       const endX = 150;
       const endY = 147;
       const streamSteps = 24;
@@ -313,14 +313,14 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
 
-      // Draw fluid stream with slight natural turbulence
+      // Draw fluid stream with natural organic turbulence
       ctx.beginPath();
       for (let i = 0; i <= streamSteps; i++) {
         const progress = i / streamSteps;
         const currY = startY + (endY - startY) * progress;
         // Natural fluid wave oscillation
-        const wave = Math.sin(currY * 0.055 - time * 8) * 1.6 + Math.cos(currY * 0.025 + time * 4) * 0.7;
-        const currX = startX + wave;
+        const wave = Math.sin(currY * 0.055 - time * 8) * 1.5 + Math.cos(currY * 0.025 + time * 4) * 0.6;
+        const currX = startX + (endX - startX) * progress + wave;
 
         if (i === 0) {
           ctx.moveTo(currX, currY);
@@ -378,27 +378,57 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.fill();
       }
 
-      // --- 8. BRONZE DRIPPER SPOUT AT TOP ---
-      // Clean minimalistic pour-over dripper tip
-      const spoutGrad = ctx.createLinearGradient(140, 10, 160, 10);
-      spoutGrad.addColorStop(0, '#5a463a');
-      spoutGrad.addColorStop(0.5, '#997e68');
-      spoutGrad.addColorStop(1, '#48352b');
-      ctx.fillStyle = spoutGrad;
-      ctx.beginPath();
-      ctx.moveTo(142, 6);
-      ctx.lineTo(158, 6);
-      ctx.lineTo(154, 20);
-      ctx.lineTo(146, 20);
-      ctx.closePath();
-      ctx.fill();
+      // --- 8. ARTISANAL GOOSENECK KETTLE SPOUT (TOP LEFT) ---
+      ctx.save();
 
-      // Spout rim ring
-      ctx.strokeStyle = '#c5833f';
+      // Soft ambient shadow under the kettle spout
+      ctx.strokeStyle = 'rgba(51, 36, 27, 0.12)';
+      ctx.lineWidth = 10;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(48, -2);
+      ctx.bezierCurveTo(85, 4, 120, 12, 146, 30);
+      ctx.stroke();
+
+      // Curved gooseneck pipe body (matte charcoal & bronze metal)
+      const kettleGrad = ctx.createLinearGradient(48, 0, 146, 28);
+      kettleGrad.addColorStop(0, '#1c1510');
+      kettleGrad.addColorStop(0.35, '#35271e');
+      kettleGrad.addColorStop(0.7, '#4e382b');
+      kettleGrad.addColorStop(1, '#271b13');
+
+      ctx.strokeStyle = kettleGrad;
+      ctx.lineWidth = 8;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(48, -4);
+      ctx.bezierCurveTo(85, 2, 120, 10, 146, 26);
+      ctx.stroke();
+
+      // Metallic light reflection ridge along top edge of spout
+      ctx.strokeStyle = 'rgba(217, 160, 91, 0.6)';
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      ctx.moveTo(50, -5);
+      ctx.bezierCurveTo(85, 1, 118, 9, 144, 25);
+      ctx.stroke();
+
+      // Polished Brass Precision Pour Nozzle Collar
+      ctx.fillStyle = '#c5833f';
+      ctx.strokeStyle = '#e2ab69';
       ctx.lineWidth = 1.2;
       ctx.beginPath();
-      ctx.ellipse(150, 20, 4, 1.4, 0, 0, Math.PI * 2);
+      ctx.ellipse(146, 26, 4.4, 2.4, Math.PI * 0.15, 0, Math.PI * 2);
+      ctx.fill();
       ctx.stroke();
+
+      // Dark inner spout aperture
+      ctx.fillStyle = '#140b07';
+      ctx.beginPath();
+      ctx.ellipse(146, 26, 3, 1.5, Math.PI * 0.15, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
 
       // --- 9. RISING STEAM PLUMES ---
       steamParticles.forEach(p => {
@@ -485,29 +515,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (drawerReserveBtn) drawerReserveBtn.addEventListener('click', closeDrawer);
 
 
-  /* ==========================================================
-     5. TASTE PROFILER MENU FILTER
-     ========================================================== */
-  const tastePills = document.querySelectorAll('.taste-pill');
-  const menuCols = document.querySelectorAll('.menu-clean-col');
 
-  tastePills.forEach(pill => {
-    pill.addEventListener('click', () => {
-      tastePills.forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
-
-      const filter = pill.getAttribute('data-filter');
-
-      menuCols.forEach(col => {
-        const cat = col.getAttribute('data-col-category');
-        if (filter === 'all' || cat === filter) {
-          col.classList.remove('dimmed');
-        } else {
-          col.classList.add('dimmed');
-        }
-      });
-    });
-  });
 
 
   /* ==========================================================
