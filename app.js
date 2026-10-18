@@ -50,413 +50,753 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   /* ==========================================================
-     2. CONTINUOUS FLUID COFFEE EXTRACTION (SOMETHING POURING ONLY)
+     2. INTERACTIVE BREW BAR ENGINE (3 LIVE SLOW-BREW STYLES)
      ========================================================== */
   const canvas = document.getElementById('coffeePourCanvas');
+  const brewTabs = document.querySelectorAll('.brew-tab');
+  const brewSpecBadge = document.getElementById('brewSpecBadge');
+
+  const BREW_SPECS = {
+    espresso: {
+      state: '<i class="fa-solid fa-circle-dot live-indicator"></i> 9 Bar Sinuous Extraction',
+      estate: 'Balur Estate Washed Lot',
+      notes: 'Notes: Raw Honey, Sweet Lime & Cacao'
+    },
+    colddrip: {
+      state: '<i class="fa-solid fa-circle-dot live-indicator"></i> 42 Drops / Min · 24h Cold Drip',
+      estate: 'Kalledevarapura Estate',
+      notes: 'Notes: Dark Plum, Molasses & Cocoa Nibs'
+    },
+    pourover: {
+      state: '<i class="fa-solid fa-circle-dot live-indicator"></i> 92°C Spiral Hand Pour · V60',
+      estate: 'Chikmagalur Red Honey Lot',
+      notes: 'Notes: Jasmine, Meyer Lemon & Cane Sugar'
+    }
+  };
+
+  let currentBrewMode = 'espresso';
+
+  function updateBrewBadge(mode) {
+    if (!brewSpecBadge || !BREW_SPECS[mode]) return;
+    const spec = BREW_SPECS[mode];
+    brewSpecBadge.style.opacity = '0';
+    setTimeout(() => {
+      brewSpecBadge.innerHTML = `
+        <span class="spec-state">${spec.state}</span>
+        <span class="spec-divider">·</span>
+        <span class="spec-estate">${spec.estate}</span>
+        <span class="spec-divider">·</span>
+        <span class="spec-notes">${spec.notes}</span>
+      `;
+      brewSpecBadge.style.opacity = '1';
+    }, 150);
+  }
+
+  brewTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const mode = tab.getAttribute('data-brew-mode');
+      if (mode === currentBrewMode) return;
+
+      brewTabs.forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+
+      currentBrewMode = mode;
+      updateBrewBadge(mode);
+
+      // Trigger mode switch ripple burst
+      if (canvasTriggerBurst) canvasTriggerBurst();
+    });
+  });
+
+  let canvasTriggerBurst = null;
+
   if (canvas) {
     const ctx = canvas.getContext('2d');
     const dpr = window.devicePixelRatio || 1;
-    const baseW = 300;
-    const baseH = 260;
+    const baseW = 420;
+    const baseH = 280;
 
-    // Set high-DPI canvas resolution
     canvas.width = baseW * dpr;
     canvas.height = baseH * dpr;
     ctx.scale(dpr, dpr);
 
     let time = 0;
+    const centerX = 210;
+
+    // Fluid state variables
     let ripples = [];
     let droplets = [];
     let steamParticles = [];
-    const centerX = 150;
-    const cupSurfaceY = 154;
 
-    // Initialize steam particles
-    for (let i = 0; i < 7; i++) {
-      steamParticles.push({
-        x: centerX - 18 + Math.random() * 36,
-        y: cupSurfaceY - 10 - Math.random() * 75,
-        vy: 0.45 + Math.random() * 0.45,
-        phase: Math.random() * Math.PI * 2,
-        life: Math.random(),
-        maxLife: 0.8 + Math.random() * 0.4,
-        size: 9 + Math.random() * 12
-      });
-    }
+    // Mode-specific state
+    let coldDripY = 48;
+    let coldDripVy = 0;
+    let coldDripActive = false;
+    let coldDripRadius = 2.4;
+    let dripFormProgress = 0;
 
-    // Add concentric ripples
-    function spawnRipple() {
-      ripples.push({
-        r: 3,
-        maxR: 38 + Math.random() * 8,
-        alpha: 0.85,
-        speed: 0.55 + Math.random() * 0.2
-      });
-    }
-
-    // Add active micro-droplets
-    function spawnDroplet() {
-      if (droplets.length < 5) {
-        const angle = Math.random() * Math.PI * 2;
-        const speed = 1.2 + Math.random() * 1.8;
-        droplets.push({
-          x: centerX,
-          y: cupSurfaceY,
-          vx: Math.cos(angle) * (speed * 0.8),
-          vy: -Math.abs(Math.sin(angle) * speed) - 1.2,
-          radius: 1.1 + Math.random() * 1.3,
-          alpha: 1,
-          gravity: 0.12
+    function initSteam(yOffset) {
+      steamParticles = [];
+      for (let i = 0; i < 8; i++) {
+        steamParticles.push({
+          x: centerX - 24 + Math.random() * 48,
+          y: yOffset - Math.random() * 80,
+          vy: 0.45 + Math.random() * 0.45,
+          phase: Math.random() * Math.PI * 2,
+          life: Math.random(),
+          maxLife: 0.8 + Math.random() * 0.4,
+          size: 10 + Math.random() * 14
         });
       }
     }
 
-    // Interactive ripple boost on click / tap
-    canvas.addEventListener('click', () => {
-      for (let i = 0; i < 3; i++) {
-        setTimeout(spawnRipple, i * 75);
+    initSteam(165);
+
+    function spawnRipple(customX, customY, maxR, speed) {
+      ripples.push({
+        x: customX || centerX,
+        y: customY || (currentBrewMode === 'colddrip' ? 180 : (currentBrewMode === 'pourover' ? 190 : 162)),
+        r: 3,
+        maxR: maxR || 42,
+        alpha: 0.85,
+        speed: speed || 0.6
+      });
+    }
+
+    function spawnDroplet(customX, customY, color) {
+      if (droplets.length < 8) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = 1.1 + Math.random() * 1.8;
+        droplets.push({
+          x: customX || centerX,
+          y: customY || (currentBrewMode === 'colddrip' ? 180 : 162),
+          vx: Math.cos(angle) * (speed * 0.8),
+          vy: -Math.abs(Math.sin(angle) * speed) - 1.2,
+          radius: 1.1 + Math.random() * 1.2,
+          alpha: 1,
+          gravity: 0.12,
+          color: color || '#d9a05b'
+        });
       }
+    }
+
+    canvasTriggerBurst = function() {
       for (let i = 0; i < 4; i++) {
+        setTimeout(() => spawnRipple(centerX, null, 48, 0.7), i * 60);
+      }
+      for (let i = 0; i < 5; i++) {
         spawnDroplet();
       }
+    };
+
+    canvas.addEventListener('click', () => {
+      canvasTriggerBurst();
     });
 
-    let rippleTimer = 0;
-    let dropletTimer = 0;
+    let frameCount = 0;
 
-    function renderCoffeePour() {
+    function renderBrewAnimation() {
       time += 0.035;
-      rippleTimer++;
-      dropletTimer++;
-
-      if (rippleTimer % 18 === 0) spawnRipple();
-      if (dropletTimer % 24 === 0) spawnDroplet();
+      frameCount++;
 
       ctx.clearRect(0, 0, baseW, baseH);
 
       // --- 1. AMBIENT BACKLIGHT GLOW ---
-      const glowGrad = ctx.createRadialGradient(centerX, 150, 10, centerX, 150, 120);
-      glowGrad.addColorStop(0, 'rgba(217, 160, 91, 0.12)');
+      const glowGrad = ctx.createRadialGradient(centerX, 160, 15, centerX, 160, 150);
+      glowGrad.addColorStop(0, 'rgba(217, 160, 91, 0.16)');
       glowGrad.addColorStop(1, 'rgba(248, 245, 239, 0)');
       ctx.fillStyle = glowGrad;
       ctx.beginPath();
-      ctx.arc(centerX, 150, 120, 0, Math.PI * 2);
+      ctx.arc(centerX, 160, 150, 0, Math.PI * 2);
       ctx.fill();
+
 
       // ==========================================
-      // --- 2. CERAMIC CUP & SAUCER (CENTERED) ---
+      // --- MODE A: HONEY ESPRESSO EXTRACTION ---
       // ==========================================
+      if (currentBrewMode === 'espresso') {
+        const cupSurfaceY = 162;
 
-      // Saucer Ambient Shadow
-      ctx.fillStyle = 'rgba(51, 36, 27, 0.08)';
-      ctx.beginPath();
-      ctx.ellipse(centerX, 238, 92, 11, 0, 0, Math.PI * 2);
-      ctx.fill();
+        if (frameCount % 20 === 0) spawnRipple(centerX, cupSurfaceY, 44, 0.6);
+        if (frameCount % 24 === 0) spawnDroplet(centerX, cupSurfaceY, '#d9a05b');
 
-      // Saucer Outer Ceramic Rim
-      const saucerGrad = ctx.createLinearGradient(centerX - 90, 230, centerX + 90, 230);
-      saucerGrad.addColorStop(0, '#e5ded2');
-      saucerGrad.addColorStop(0.2, '#faf7f2');
-      saucerGrad.addColorStop(0.5, '#ffffff');
-      saucerGrad.addColorStop(0.8, '#f3ede2');
-      saucerGrad.addColorStop(1, '#dbd1c1');
-
-      ctx.fillStyle = saucerGrad;
-      ctx.strokeStyle = '#d6ccbe';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.ellipse(centerX, 230, 86, 14, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-
-      // Saucer Inner Well Ring
-      ctx.strokeStyle = 'rgba(184, 94, 53, 0.25)';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.ellipse(centerX, 230, 56, 9, 0, 0, Math.PI * 2);
-      ctx.stroke();
-
-      // Cup Handle on Right Side
-      ctx.lineWidth = 7;
-      ctx.strokeStyle = '#ebd9c3';
-      ctx.lineCap = 'round';
-      ctx.beginPath();
-      ctx.arc(centerX + 56, 185, 17, -Math.PI * 0.4, Math.PI * 0.55);
-      ctx.stroke();
-
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = '#faf7f2';
-      ctx.beginPath();
-      ctx.arc(centerX + 56, 185, 17, -Math.PI * 0.35, Math.PI * 0.5);
-      ctx.stroke();
-
-      // Cup Ceramic Body
-      const cupGrad = ctx.createLinearGradient(centerX - 60, 152, centerX + 60, 152);
-      cupGrad.addColorStop(0, '#ded4c4');
-      cupGrad.addColorStop(0.15, '#f5efe4');
-      cupGrad.addColorStop(0.5, '#ffffff');
-      cupGrad.addColorStop(0.85, '#ede6da');
-      cupGrad.addColorStop(1, '#d8cdbb');
-
-      ctx.fillStyle = cupGrad;
-      ctx.strokeStyle = '#d0c4b2';
-      ctx.lineWidth = 1;
-
-      ctx.beginPath();
-      ctx.moveTo(centerX - 56, 152);
-      ctx.quadraticCurveTo(centerX - 54, 192, centerX - 32, 222);
-      ctx.lineTo(centerX + 32, 222);
-      ctx.quadraticCurveTo(centerX + 54, 192, centerX + 56, 152);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-
-      // Cup Base Ellipse
-      ctx.fillStyle = '#dbd0bf';
-      ctx.beginPath();
-      ctx.ellipse(centerX, 222, 32, 6, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Cup Outer Ceramic Rim
-      ctx.fillStyle = '#faf7f2';
-      ctx.strokeStyle = '#b85e35';
-      ctx.lineWidth = 1.2;
-      ctx.beginPath();
-      ctx.ellipse(centerX, 152, 56, 18, 0, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-
-      // Liquid Surface with Inner Clipping
-      ctx.save();
-      ctx.beginPath();
-      ctx.ellipse(centerX, cupSurfaceY, 52, 15.5, 0, 0, Math.PI * 2);
-      ctx.clip();
-
-      // Deep rich espresso base
-      const coffeeGrad = ctx.createRadialGradient(centerX, cupSurfaceY, 4, centerX, cupSurfaceY, 50);
-      coffeeGrad.addColorStop(0, '#5a3118');
-      coffeeGrad.addColorStop(0.35, '#3a1e12');
-      coffeeGrad.addColorStop(0.75, '#26130b');
-      coffeeGrad.addColorStop(1, '#1b0d07');
-      ctx.fillStyle = coffeeGrad;
-      ctx.fillRect(centerX - 60, cupSurfaceY - 20, 120, 40);
-
-      // Crema foam outer perimeter ring
-      const cremaGrad = ctx.createRadialGradient(centerX, cupSurfaceY, 20, centerX, cupSurfaceY, 50);
-      cremaGrad.addColorStop(0, 'rgba(197, 131, 63, 0)');
-      cremaGrad.addColorStop(0.7, 'rgba(217, 160, 91, 0.45)');
-      cremaGrad.addColorStop(0.95, 'rgba(217, 160, 91, 0.85)');
-      cremaGrad.addColorStop(1, 'rgba(150, 85, 35, 0.95)');
-      ctx.fillStyle = cremaGrad;
-      ctx.fillRect(centerX - 60, cupSurfaceY - 20, 120, 40);
-
-      // Swirling crema marbling textures
-      for (let s = 0; s < 3; s++) {
-        ctx.strokeStyle = `rgba(224, 172, 108, ${0.25 - s * 0.05})`;
-        ctx.lineWidth = 1.8;
+        // Saucer Ambient Shadow
+        ctx.fillStyle = 'rgba(51, 36, 27, 0.08)';
         ctx.beginPath();
-        const swirlAngle = time * 0.4 + s * (Math.PI * 0.65);
-        ctx.ellipse(
-          centerX + Math.cos(swirlAngle) * 9,
-          cupSurfaceY + Math.sin(swirlAngle) * 3,
-          26 + s * 9,
-          7 + s * 2.5,
-          swirlAngle * 0.2,
-          0,
-          Math.PI * 2
-        );
-        ctx.stroke();
-      }
+        ctx.ellipse(centerX, 246, 96, 12, 0, 0, Math.PI * 2);
+        ctx.fill();
 
-      // Concentric Expanding Wave Ripples
-      for (let i = ripples.length - 1; i >= 0; i--) {
-        const rip = ripples[i];
-        rip.r += rip.speed;
-        rip.alpha -= 0.018;
-
-        if (rip.alpha <= 0 || rip.r >= rip.maxR) {
-          ripples.splice(i, 1);
-          continue;
-        }
-
-        ctx.strokeStyle = `rgba(255, 230, 185, ${rip.alpha * 0.85})`;
-        ctx.lineWidth = 1.4;
-        ctx.beginPath();
-        ctx.ellipse(centerX, cupSurfaceY, rip.r, rip.r * 0.32, 0, 0, Math.PI * 2);
-        ctx.stroke();
-
-        ctx.strokeStyle = `rgba(58, 30, 18, ${rip.alpha * 0.5})`;
+        // Saucer
+        const saucerGrad = ctx.createLinearGradient(centerX - 95, 238, centerX + 95, 238);
+        saucerGrad.addColorStop(0, '#e5ded2');
+        saucerGrad.addColorStop(0.2, '#faf7f2');
+        saucerGrad.addColorStop(0.5, '#ffffff');
+        saucerGrad.addColorStop(0.8, '#f3ede2');
+        saucerGrad.addColorStop(1, '#dbd1c1');
+        ctx.fillStyle = saucerGrad;
+        ctx.strokeStyle = '#d6ccbe';
         ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.ellipse(centerX, cupSurfaceY + 0.5, rip.r * 0.92, rip.r * 0.29, 0, 0, Math.PI * 2);
+        ctx.ellipse(centerX, 238, 92, 15, 0, 0, Math.PI * 2);
+        ctx.fill();
         ctx.stroke();
-      }
 
-      // Froth micro-bubbles
-      for (let b = 0; b < 6; b++) {
-        const bAngle = time * 0.25 + (b * Math.PI / 3);
-        const bx = centerX + Math.cos(bAngle) * (14 + Math.sin(time + b) * 3);
-        const by = cupSurfaceY + Math.sin(bAngle) * (4.5 + Math.cos(time + b) * 1);
-        ctx.fillStyle = 'rgba(235, 195, 140, 0.75)';
+        // Cup Handle
+        ctx.lineWidth = 7;
+        ctx.strokeStyle = '#ebd9c3';
+        ctx.lineCap = 'round';
         ctx.beginPath();
-        ctx.arc(bx, by, 1.2, 0, Math.PI * 2);
+        ctx.arc(centerX + 62, 192, 18, -Math.PI * 0.4, Math.PI * 0.55);
+        ctx.stroke();
+
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#faf7f2';
+        ctx.beginPath();
+        ctx.arc(centerX + 62, 192, 18, -Math.PI * 0.35, Math.PI * 0.5);
+        ctx.stroke();
+
+        // Cup Body
+        const cupGrad = ctx.createLinearGradient(centerX - 65, 162, centerX + 65, 162);
+        cupGrad.addColorStop(0, '#ded4c4');
+        cupGrad.addColorStop(0.15, '#f5efe4');
+        cupGrad.addColorStop(0.5, '#ffffff');
+        cupGrad.addColorStop(0.85, '#ede6da');
+        cupGrad.addColorStop(1, '#d8cdbb');
+        ctx.fillStyle = cupGrad;
+        ctx.strokeStyle = '#d0c4b2';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(centerX - 60, 162);
+        ctx.quadraticCurveTo(centerX - 58, 202, centerX - 35, 230);
+        ctx.lineTo(centerX + 35, 230);
+        ctx.quadraticCurveTo(centerX + 58, 202, centerX + 60, 162);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Outer Rim
+        ctx.fillStyle = '#faf7f2';
+        ctx.strokeStyle = '#b85e35';
+        ctx.lineWidth = 1.3;
+        ctx.beginPath();
+        ctx.ellipse(centerX, 162, 60, 19, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // Liquid Surface (Clipped)
+        ctx.save();
+        ctx.beginPath();
+        ctx.ellipse(centerX, cupSurfaceY, 56, 16.5, 0, 0, Math.PI * 2);
+        ctx.clip();
+
+        const coffeeGrad = ctx.createRadialGradient(centerX, cupSurfaceY, 4, centerX, cupSurfaceY, 55);
+        coffeeGrad.addColorStop(0, '#5a3118');
+        coffeeGrad.addColorStop(0.4, '#3a1e12');
+        coffeeGrad.addColorStop(0.8, '#26130b');
+        coffeeGrad.addColorStop(1, '#1b0d07');
+        ctx.fillStyle = coffeeGrad;
+        ctx.fillRect(centerX - 65, cupSurfaceY - 20, 130, 40);
+
+        // Crema Marbling
+        const cremaGrad = ctx.createRadialGradient(centerX, cupSurfaceY, 18, centerX, cupSurfaceY, 55);
+        cremaGrad.addColorStop(0, 'rgba(197, 131, 63, 0)');
+        cremaGrad.addColorStop(0.7, 'rgba(217, 160, 91, 0.45)');
+        cremaGrad.addColorStop(0.95, 'rgba(217, 160, 91, 0.85)');
+        cremaGrad.addColorStop(1, 'rgba(150, 85, 35, 0.95)');
+        ctx.fillStyle = cremaGrad;
+        ctx.fillRect(centerX - 65, cupSurfaceY - 20, 130, 40);
+
+        // Swirling Crema Rings
+        for (let s = 0; s < 3; s++) {
+          ctx.strokeStyle = `rgba(224, 172, 108, ${0.28 - s * 0.06})`;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          const swirlAngle = time * 0.4 + s * (Math.PI * 0.65);
+          ctx.ellipse(
+            centerX + Math.cos(swirlAngle) * 10,
+            cupSurfaceY + Math.sin(swirlAngle) * 3,
+            28 + s * 9,
+            8 + s * 2.5,
+            swirlAngle * 0.2,
+            0,
+            Math.PI * 2
+          );
+          ctx.stroke();
+        }
+
+        // Concentric Ripples
+        for (let i = ripples.length - 1; i >= 0; i--) {
+          const rip = ripples[i];
+          rip.r += rip.speed;
+          rip.alpha -= 0.018;
+          if (rip.alpha <= 0 || rip.r >= rip.maxR) {
+            ripples.splice(i, 1);
+            continue;
+          }
+          ctx.strokeStyle = `rgba(255, 230, 185, ${rip.alpha * 0.85})`;
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.ellipse(rip.x, rip.y, rip.r, rip.r * 0.32, 0, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        ctx.restore();
+
+        // Shower Screen Portafilter Head at Top
+        ctx.fillStyle = '#3a2c23';
+        ctx.fillRect(centerX - 42, 6, 84, 12);
+        const brassGrad = ctx.createLinearGradient(centerX - 40, 18, centerX + 40, 18);
+        brassGrad.addColorStop(0, '#8c582f');
+        brassGrad.addColorStop(0.4, '#e2ab69');
+        brassGrad.addColorStop(1, '#7a4a25');
+        ctx.fillStyle = brassGrad;
+        ctx.beginPath();
+        ctx.ellipse(centerX, 18, 42, 5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Bottomless Extraction Gathering Cone
+        ctx.fillStyle = '#6e381b';
+        ctx.beginPath();
+        ctx.moveTo(centerX - 12, 18);
+        ctx.quadraticCurveTo(centerX - 5, 24, centerX - 3, 28);
+        ctx.lineTo(centerX + 3, 28);
+        ctx.quadraticCurveTo(centerX + 5, 24, centerX + 12, 18);
+        ctx.closePath();
+        ctx.fill();
+
+        // Continuous Sinuous Stream
+        const startY = 28;
+        const targetY = cupSurfaceY;
+        const steps = 24;
+
+        ctx.beginPath();
+        ctx.lineCap = 'round';
+        for (let i = 0; i <= steps; i++) {
+          const p = i / steps;
+          const currY = startY + (targetY - startY) * p;
+          const wave = Math.sin(currY * 0.055 - time * 8) * 1.6 + Math.cos(currY * 0.025 + time * 4) * 0.7;
+          const currX = centerX + wave;
+          if (i === 0) ctx.moveTo(currX, currY);
+          else ctx.lineTo(currX, currY);
+        }
+
+        ctx.strokeStyle = '#2b140b';
+        ctx.lineWidth = 5.5;
+        ctx.stroke();
+
+        ctx.strokeStyle = '#7c4320';
+        ctx.lineWidth = 3.8;
+        ctx.stroke();
+
+        ctx.strokeStyle = '#e2ab69';
+        ctx.lineWidth = 1.8;
+        ctx.setLineDash([10, 14]);
+        ctx.lineDashOffset = -time * 115;
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Impact Froth Pulse
+        const frothPulse = Math.sin(time * 12) * 1.3;
+        const frothGrad = ctx.createRadialGradient(centerX, cupSurfaceY, 1, centerX, cupSurfaceY, 8 + frothPulse);
+        frothGrad.addColorStop(0, '#ffe8c2');
+        frothGrad.addColorStop(0.5, '#c5833f');
+        frothGrad.addColorStop(1, 'rgba(184, 94, 53, 0)');
+        ctx.fillStyle = frothGrad;
+        ctx.beginPath();
+        ctx.ellipse(centerX, cupSurfaceY, 9 + frothPulse, 4.2 + frothPulse * 0.4, 0, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      ctx.restore(); // Restore cup clipping
-
-
-      // =======================================================
-      // --- 3. ARCHITECTURAL EXTRACTION GROUP HEAD (TOP CENTER) ---
-      // =======================================================
-      // Brushed Stainless Steel & Brass extraction group flush at top
-      ctx.save();
-
-      // Top Mounting Collar
-      const groupGrad = ctx.createLinearGradient(centerX - 42, 10, centerX + 42, 10);
-      groupGrad.addColorStop(0, '#2c221b');
-      groupGrad.addColorStop(0.2, '#5a4639');
-      groupGrad.addColorStop(0.5, '#8c705c');
-      groupGrad.addColorStop(0.8, '#5a4639');
-      groupGrad.addColorStop(1, '#2c221b');
-
-      ctx.fillStyle = groupGrad;
-      ctx.fillRect(centerX - 40, 6, 80, 10);
-
-      // Polished Brass Accent Ring
-      const brassCollar = ctx.createLinearGradient(centerX - 40, 16, centerX + 40, 16);
-      brassCollar.addColorStop(0, '#8c582f');
-      brassCollar.addColorStop(0.3, '#d9a05b');
-      brassCollar.addColorStop(0.7, '#f0c68d');
-      brassCollar.addColorStop(1, '#7a4a25');
-
-      ctx.fillStyle = brassCollar;
-      ctx.beginPath();
-      ctx.ellipse(centerX, 16, 38, 4.5, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Micro-mesh Shower Screen Underneath
-      ctx.fillStyle = '#18100b';
-      ctx.beginPath();
-      ctx.ellipse(centerX, 16, 34, 3.6, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Fluid Extraction Gathering Cone
-      const coneGrad = ctx.createLinearGradient(centerX - 10, 16, centerX + 10, 26);
-      coneGrad.addColorStop(0, '#5a3118');
-      coneGrad.addColorStop(0.5, '#8c4820');
-      coneGrad.addColorStop(1, '#4a2512');
-
-      ctx.fillStyle = coneGrad;
-      ctx.beginPath();
-      ctx.moveTo(centerX - 12, 16);
-      ctx.quadraticCurveTo(centerX - 6, 22, centerX - 3, 26);
-      ctx.lineTo(centerX + 3, 26);
-      ctx.quadraticCurveTo(centerX + 6, 22, centerX + 12, 16);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.restore();
-
 
       // ==========================================
-      // --- 4. CONTINUOUS FLUID COFFEE STREAM ---
+      // --- MODE B: SLOW COLD DRIP TOWER ---
       // ==========================================
-      // The stream flows continuously from gathering cone (y=26) down to cup (y=154)
-      const startX = centerX;
-      const startY = 26;
-      const targetX = centerX;
-      const targetY = cupSurfaceY;
-      const streamSteps = 24;
+      else if (currentBrewMode === 'colddrip') {
+        const beakerSurfaceY = 180;
 
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
+        // Droplet Formation & Fall Physics
+        if (!coldDripActive) {
+          dripFormProgress += 0.024; // Slow deliberate drip formation
+          coldDripRadius = 2.0 + dripFormProgress * 2.8;
 
-      // Sinuous fluid stream path
-      ctx.beginPath();
-      for (let i = 0; i <= streamSteps; i++) {
-        const progress = i / streamSteps;
-        const currY = startY + (targetY - startY) * progress;
-        // Natural fluid wave oscillation
-        const wave = Math.sin(currY * 0.055 - time * 8) * 1.5 + Math.cos(currY * 0.025 + time * 4) * 0.6;
-        const currX = startX + wave;
-
-        if (i === 0) {
-          ctx.moveTo(currX, currY);
+          if (dripFormProgress >= 1.0) {
+            coldDripActive = true;
+            coldDripY = 48;
+            coldDripVy = 0.5;
+          }
         } else {
-          ctx.lineTo(currX, currY);
+          coldDripY += coldDripVy;
+          coldDripVy += 0.32; // Gravity
+
+          if (coldDripY >= beakerSurfaceY) {
+            coldDripActive = false;
+            dripFormProgress = 0;
+            spawnRipple(centerX, beakerSurfaceY, 52, 0.7);
+            spawnDroplet(centerX, beakerSurfaceY, '#7c4320');
+            spawnDroplet(centerX, beakerSurfaceY, '#d9a05b');
+          }
+        }
+
+        // Crystal Beaker Shadow
+        ctx.fillStyle = 'rgba(51, 36, 27, 0.08)';
+        ctx.beginPath();
+        ctx.ellipse(centerX, 252, 70, 10, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Laboratory Crystal Beaker Body (Glass with Amber Cold Brew)
+        const beakerGrad = ctx.createLinearGradient(centerX - 50, 160, centerX + 50, 160);
+        beakerGrad.addColorStop(0, 'rgba(255, 255, 255, 0.6)');
+        beakerGrad.addColorStop(0.2, 'rgba(255, 255, 255, 0.15)');
+        beakerGrad.addColorStop(0.8, 'rgba(255, 255, 255, 0.15)');
+        beakerGrad.addColorStop(1, 'rgba(255, 255, 255, 0.5)');
+
+        ctx.fillStyle = beakerGrad;
+        ctx.strokeStyle = 'rgba(214, 204, 190, 0.85)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(centerX - 42, 140);
+        ctx.lineTo(centerX - 46, 235);
+        ctx.quadraticCurveTo(centerX - 46, 246, centerX - 32, 246);
+        ctx.lineTo(centerX + 32, 246);
+        ctx.quadraticCurveTo(centerX + 46, 246, centerX + 46, 235);
+        ctx.lineTo(centerX + 42, 140);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Beaker Measurement Ticks
+        ctx.strokeStyle = 'rgba(184, 94, 53, 0.4)';
+        ctx.lineWidth = 1.2;
+        for (let m = 0; m < 4; m++) {
+          const my = 220 - m * 14;
+          ctx.beginPath();
+          ctx.moveTo(centerX - 43, my);
+          ctx.lineTo(centerX - 35, my);
+          ctx.stroke();
+        }
+
+        // Cold Brew Liquid in Beaker (Clipped)
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(centerX - 45, beakerSurfaceY);
+        ctx.lineTo(centerX - 46, 235);
+        ctx.quadraticCurveTo(centerX - 46, 246, centerX - 32, 246);
+        ctx.lineTo(centerX + 32, 246);
+        ctx.quadraticCurveTo(centerX + 46, 246, centerX + 46, 235);
+        ctx.lineTo(centerX + 45, beakerSurfaceY);
+        ctx.closePath();
+        ctx.clip();
+
+        // Chilled dark amber liquid
+        const coldGrad = ctx.createLinearGradient(centerX, beakerSurfaceY, centerX, 246);
+        coldGrad.addColorStop(0, '#5a2d16');
+        coldGrad.addColorStop(0.5, '#35180c');
+        coldGrad.addColorStop(1, '#1e0c05');
+        ctx.fillStyle = coldGrad;
+        ctx.fillRect(centerX - 50, beakerSurfaceY - 10, 100, 80);
+
+        // Floating Ice Crystal Cube
+        ctx.save();
+        ctx.translate(centerX - 10, beakerSurfaceY + 14);
+        ctx.rotate(0.2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.55)';
+        ctx.lineWidth = 1;
+        ctx.fillRect(-12, -12, 24, 24);
+        ctx.strokeRect(-12, -12, 24, 24);
+        ctx.restore();
+
+        // Surface Ripples in Beaker
+        for (let i = ripples.length - 1; i >= 0; i--) {
+          const rip = ripples[i];
+          rip.r += rip.speed;
+          rip.alpha -= 0.02;
+          if (rip.alpha <= 0 || rip.r >= rip.maxR) {
+            ripples.splice(i, 1);
+            continue;
+          }
+          ctx.strokeStyle = `rgba(240, 198, 141, ${rip.alpha})`;
+          ctx.lineWidth = 1.3;
+          ctx.beginPath();
+          ctx.ellipse(rip.x, rip.y, rip.r * 0.7, rip.r * 0.22, 0, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        ctx.restore();
+
+        // Beaker Top Rim
+        ctx.strokeStyle = 'rgba(214, 204, 190, 0.9)';
+        ctx.lineWidth = 1.6;
+        ctx.beginPath();
+        ctx.ellipse(centerX, 140, 42, 7, 0, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Kyoto Glass Drip Tower Nozzle at Top
+        ctx.strokeStyle = 'rgba(200, 190, 175, 0.9)';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(centerX - 18, 10);
+        ctx.lineTo(centerX - 8, 36);
+        ctx.lineTo(centerX - 3, 44);
+        ctx.lineTo(centerX + 3, 44);
+        ctx.lineTo(centerX + 8, 36);
+        ctx.lineTo(centerX + 18, 10);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Amber Drip Valve Collar
+        ctx.fillStyle = '#b85e35';
+        ctx.fillRect(centerX - 6, 32, 12, 4);
+
+        // Drawing Falling Droplet or Forming Droplet
+        if (coldDripActive) {
+          // Elongated tear-drop falling
+          ctx.fillStyle = '#7c4320';
+          ctx.beginPath();
+          ctx.ellipse(centerX, coldDripY, 2.6, 4.4, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = '#e2ab69';
+          ctx.beginPath();
+          ctx.arc(centerX + 0.8, coldDripY - 1, 1, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          // Swelling Meniscus at Nozzle
+          const neckY = 44 + dripFormProgress * 4;
+          ctx.fillStyle = '#7c4320';
+          ctx.beginPath();
+          ctx.ellipse(centerX, neckY, coldDripRadius * 0.85, coldDripRadius * 1.1, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = '#e2ab69';
+          ctx.beginPath();
+          ctx.arc(centerX + 0.8, neckY - 0.5, 0.9, 0, Math.PI * 2);
+          ctx.fill();
         }
       }
 
-      // Base stream shadow/depth
-      ctx.strokeStyle = '#2b140b';
-      ctx.lineWidth = 5.4;
-      ctx.stroke();
 
-      // Amber liquid core
-      ctx.strokeStyle = '#7c4320';
-      ctx.lineWidth = 3.8;
-      ctx.stroke();
+      // ==========================================
+      // --- MODE C: POUR-OVER V60 SPIRAL BLOOM ---
+      // ==========================================
+      else if (currentBrewMode === 'pourover') {
+        const decanterSurfaceY = 196;
 
-      // Shimmering Golden Crema Highlight rushing down at 60fps
-      ctx.strokeStyle = '#e2ab69';
-      ctx.lineWidth = 1.8;
-      ctx.setLineDash([9, 14]);
-      ctx.lineDashOffset = -time * 110; // High-velocity fluid extraction
-      ctx.stroke();
-      ctx.setLineDash([]); // Reset dash
+        if (frameCount % 18 === 0) spawnRipple(centerX, decanterSurfaceY, 40, 0.55);
+        if (frameCount % 30 === 0) spawnDroplet(centerX, decanterSurfaceY, '#d9a05b');
+
+        // Glass Decanter Base Shadow
+        ctx.fillStyle = 'rgba(51, 36, 27, 0.08)';
+        ctx.beginPath();
+        ctx.ellipse(centerX, 252, 75, 11, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Glass Decanter Carafe Body
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.strokeStyle = 'rgba(214, 204, 190, 0.8)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(centerX - 24, 150);
+        ctx.lineTo(centerX - 52, 238);
+        ctx.quadraticCurveTo(centerX - 52, 248, centerX - 36, 248);
+        ctx.lineTo(centerX + 36, 248);
+        ctx.quadraticCurveTo(centerX + 52, 248, centerX + 52, 238);
+        ctx.lineTo(centerX + 24, 150);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Decanter Glass Handle on Left
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = 'rgba(214, 204, 190, 0.8)';
+        ctx.beginPath();
+        ctx.arc(centerX - 50, 196, 18, Math.PI * 0.6, Math.PI * 1.55);
+        ctx.stroke();
+
+        // Filtered Amber Brew in Decanter (Clipped)
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(centerX - 40, decanterSurfaceY);
+        ctx.lineTo(centerX - 52, 238);
+        ctx.quadraticCurveTo(centerX - 52, 248, centerX - 36, 248);
+        ctx.lineTo(centerX + 36, 248);
+        ctx.quadraticCurveTo(centerX + 52, 248, centerX + 52, 238);
+        ctx.lineTo(centerX + 40, decanterSurfaceY);
+        ctx.closePath();
+        ctx.clip();
+
+        const pouroverGrad = ctx.createLinearGradient(centerX, decanterSurfaceY, centerX, 248);
+        pouroverGrad.addColorStop(0, '#9e5a2b');
+        pouroverGrad.addColorStop(0.6, '#6b3616');
+        pouroverGrad.addColorStop(1, '#3b1c0b');
+        ctx.fillStyle = pouroverGrad;
+        ctx.fillRect(centerX - 60, decanterSurfaceY - 10, 120, 80);
+
+        // Ripples in Decanter
+        for (let i = ripples.length - 1; i >= 0; i--) {
+          const rip = ripples[i];
+          rip.r += rip.speed;
+          rip.alpha -= 0.02;
+          if (rip.alpha <= 0 || rip.r >= rip.maxR) {
+            ripples.splice(i, 1);
+            continue;
+          }
+          ctx.strokeStyle = `rgba(255, 230, 185, ${rip.alpha * 0.9})`;
+          ctx.lineWidth = 1.3;
+          ctx.beginPath();
+          ctx.ellipse(rip.x, rip.y, rip.r * 0.75, rip.r * 0.22, 0, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        ctx.restore();
+
+        // Decanter Rim Collar
+        ctx.strokeStyle = 'rgba(214, 204, 190, 0.9)';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.ellipse(centerX, 150, 24, 6, 0, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Minimalist Ceramic V60 Dripper Cone
+        const v60Grad = ctx.createLinearGradient(centerX - 48, 70, centerX + 48, 70);
+        v60Grad.addColorStop(0, '#e5ded2');
+        v60Grad.addColorStop(0.3, '#ffffff');
+        v60Grad.addColorStop(0.7, '#fbf8f2');
+        v60Grad.addColorStop(1, '#d8cdbb');
+
+        ctx.fillStyle = v60Grad;
+        ctx.strokeStyle = '#d0c4b2';
+        ctx.lineWidth = 1.3;
+        ctx.beginPath();
+        ctx.moveTo(centerX - 48, 70);
+        ctx.lineTo(centerX - 14, 136);
+        ctx.lineTo(centerX + 14, 136);
+        ctx.lineTo(centerX + 48, 70);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // V60 Handle Ring
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(centerX + 50, 92, 11, -Math.PI * 0.3, Math.PI * 0.6);
+        ctx.stroke();
+
+        // Pleated Paper Filter Inside V60
+        ctx.fillStyle = '#faf6ed';
+        ctx.strokeStyle = '#ebd9c3';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(centerX - 42, 70);
+        ctx.lineTo(centerX - 10, 132);
+        ctx.lineTo(centerX + 10, 132);
+        ctx.lineTo(centerX + 42, 70);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Blooming Fresh Coffee Bed with CO2 Micro Bubbles
+        const bloomGrad = ctx.createRadialGradient(centerX, 78, 2, centerX, 78, 30);
+        bloomGrad.addColorStop(0, '#5a3118');
+        bloomGrad.addColorStop(0.8, '#331b0e');
+        bloomGrad.addColorStop(1, '#211008');
+        ctx.fillStyle = bloomGrad;
+        ctx.beginPath();
+        ctx.ellipse(centerX, 78, 34, 10, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Dynamic Blooming Froth Bubbles
+        for (let b = 0; b < 5; b++) {
+          const bAngle = time * 0.3 + (b * Math.PI / 2.5);
+          const bx = centerX + Math.cos(bAngle) * (14 + Math.sin(time + b) * 5);
+          const by = 78 + Math.sin(bAngle) * (3.8 + Math.cos(time + b) * 1.5);
+          ctx.fillStyle = 'rgba(217, 160, 91, 0.85)';
+          ctx.beginPath();
+          ctx.arc(bx, by, 1.4, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Hot Water Spiral Pour Stream into V60 Cone
+        const spiralX = centerX + Math.cos(time * 3.5) * 10;
+        const spiralY = 78 + Math.sin(time * 3.5) * 3;
+
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.75)';
+        ctx.lineWidth = 2.2;
+        ctx.beginPath();
+        ctx.moveTo(centerX - 15, 12);
+        ctx.quadraticCurveTo(centerX - 5, 45, spiralX, spiralY);
+        ctx.stroke();
+
+        // Extraction Stream dripping from V60 Cone into Decanter
+        const streamStart = 136;
+        const streamEnd = decanterSurfaceY;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = '#8c4820';
+        ctx.lineWidth = 2.8;
+        ctx.beginPath();
+        ctx.moveTo(centerX, streamStart);
+        ctx.lineTo(centerX, streamEnd);
+        ctx.stroke();
+
+        ctx.strokeStyle = '#e2ab69';
+        ctx.lineWidth = 1.3;
+        ctx.setLineDash([6, 8]);
+        ctx.lineDashOffset = -time * 80;
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
 
 
       // ==========================================
-      // --- 5. IMPACT SPLASH & MICRO DROPLETS ---
+      // --- ACTIVE IMPACT DROPLETS ---
       // ==========================================
-      const frothPulse = Math.sin(time * 12) * 1.2;
-      const frothGrad = ctx.createRadialGradient(centerX, cupSurfaceY, 1, centerX, cupSurfaceY, 8 + frothPulse);
-      frothGrad.addColorStop(0, '#ffe8c2');
-      frothGrad.addColorStop(0.5, '#c5833f');
-      frothGrad.addColorStop(1, 'rgba(184, 94, 53, 0)');
-      ctx.fillStyle = frothGrad;
-      ctx.beginPath();
-      ctx.ellipse(centerX, cupSurfaceY, 9 + frothPulse, 4.2 + frothPulse * 0.4, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Active Droplets bouncing up
       for (let d = droplets.length - 1; d >= 0; d--) {
         const drop = droplets[d];
         drop.x += drop.vx;
         drop.y += drop.vy;
         drop.vy += drop.gravity;
-        drop.alpha -= 0.028;
+        drop.alpha -= 0.026;
 
-        if (drop.alpha <= 0 || drop.y > cupSurfaceY + 6) {
+        if (drop.alpha <= 0 || drop.y > 220) {
           droplets.splice(d, 1);
           continue;
         }
 
-        ctx.fillStyle = `rgba(217, 160, 91, ${drop.alpha})`;
+        ctx.fillStyle = drop.color || '#d9a05b';
+        ctx.globalAlpha = Math.max(drop.alpha, 0);
         ctx.beginPath();
         ctx.arc(drop.x, drop.y, drop.radius, 0, Math.PI * 2);
         ctx.fill();
+        ctx.globalAlpha = 1.0;
       }
 
 
       // ==========================================
-      // --- 6. RISING STEAM PLUMES FROM CUP ---
+      // --- RISING STEAM / CHILL PLUMES ---
       // ==========================================
+      const baseSteamY = currentBrewMode === 'colddrip' ? 180 : 160;
+
       steamParticles.forEach(p => {
         p.y -= p.vy;
-        p.life += 0.008;
+        p.life += 0.007;
 
         if (p.life >= p.maxLife || p.y < 30) {
-          p.x = centerX - 16 + Math.random() * 32;
-          p.y = cupSurfaceY - 5;
+          p.x = centerX - 24 + Math.random() * 48;
+          p.y = baseSteamY;
           p.life = 0;
-          p.vy = 0.45 + Math.random() * 0.45;
-          p.size = 9 + Math.random() * 12;
+          p.vy = 0.4 + Math.random() * 0.45;
+          p.size = 10 + Math.random() * 14;
         }
 
-        const steamAlpha = Math.sin((p.life / p.maxLife) * Math.PI) * 0.16;
-        const driftX = Math.sin(time * 1.5 + p.phase + p.y * 0.04) * 8;
+        const steamAlpha = Math.sin((p.life / p.maxLife) * Math.PI) * (currentBrewMode === 'colddrip' ? 0.09 : 0.16);
+        const driftX = Math.sin(time * 1.5 + p.phase + p.y * 0.04) * 10;
 
         ctx.save();
         const steamGrad = ctx.createRadialGradient(p.x + driftX, p.y, 0, p.x + driftX, p.y, p.size);
@@ -470,10 +810,10 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.restore();
       });
 
-      requestAnimationFrame(renderCoffeePour);
+      requestAnimationFrame(renderBrewAnimation);
     }
 
-    renderCoffeePour();
+    renderBrewAnimation();
   }
 
 
