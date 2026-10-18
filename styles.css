@@ -529,117 +529,263 @@ button, input, select, textarea {
 }
 
 /* ==========================================================
-   HERO SECTION & CONTINUOUS CANVAS POUR ANIMATION
+   HERO SECTION (CINEMATIC DUAL-FRAME SHOWCASE)
    ========================================================== */
 .hero-section {
   position: relative;
-  min-height: 96vh;
+  min-height: 92vh;
   display: flex;
   align-items: center;
-  justify-content: center;
+  padding: calc(var(--header-height) + 40px) 0 60px;
+  background-color: var(--bg-body);
   overflow: hidden;
-  padding-top: var(--header-height);
-  background-color: var(--bg-sand);
 }
 
-.hero-bg-container {
+.hero-ambient-glow {
   position: absolute;
-  inset: 0;
+  top: -80px;
+  right: -80px;
+  width: 580px;
+  height: 580px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(217, 160, 91, 0.14) 0%, rgba(248, 245, 239, 0) 70%);
+  pointer-events: none;
   z-index: 1;
 }
 
-.hero-bg-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  opacity: 0.36;
-  filter: saturate(0.85);
-}
-
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at center, rgba(248, 245, 239, 0.45) 0%, rgba(248, 245, 239, 0.88) 75%, var(--bg-body) 100%);
-}
-
-.hero-content-wrapper {
+.hero-container {
   position: relative;
   z-index: 2;
   width: 100%;
-  padding: 30px 0 40px;
 }
 
-.hero-container {
+.hero-split-layout {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  align-items: center;
+  gap: 56px;
+}
+
+.hero-copy-col {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
+  align-items: flex-start;
+  text-align: left;
 }
 
 .hero-brand-pill {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-size: 0.74rem;
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--accent-terracotta);
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--bg-card);
   border: 1px solid var(--border-medium);
   padding: 6px 16px;
   border-radius: 30px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
 }
 
 .hero-title {
-  font-size: clamp(2.4rem, 4.8vw, 4rem);
-  line-height: 1.12;
+  font-size: clamp(2.4rem, 4.2vw, 3.8rem);
+  line-height: 1.15;
   font-weight: 500;
   color: var(--text-main);
-  margin-bottom: 14px;
-  max-width: 820px;
+  margin-bottom: 18px;
 }
 
 .hero-subtitle {
-  max-width: 560px;
-  font-size: clamp(0.95rem, 1.2vw, 1.12rem);
+  max-width: 520px;
+  font-size: clamp(0.96rem, 1.15vw, 1.08rem);
   color: var(--text-body);
-  margin-bottom: 26px;
-  line-height: 1.6;
+  margin-bottom: 30px;
+  line-height: 1.65;
 }
 
 .hero-cta-group {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   flex-wrap: wrap;
-  justify-content: center;
-  margin-bottom: 28px;
+  margin-bottom: 34px;
 }
 
 .hero-btn {
-  min-width: 165px;
+  min-width: 160px;
   padding: 13px 26px;
 }
 
-/* ==========================================================
-   CANVAS CONTINUOUS POUR ENGINE (DYNAMIC FLUID + PARTICLES)
-   ========================================================== */
-.canvas-pour-container {
+.hero-sanctuary-meta {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  position: relative;
-  margin-top: 4px;
-  cursor: pointer;
+  gap: 12px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-light);
+  width: 100%;
 }
 
-#coffeePourCanvas {
+.sanctuary-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.sanctuary-meta-item i {
+  color: var(--accent-terracotta);
+  font-size: 0.82rem;
+}
+
+.meta-dot {
+  color: var(--border-medium);
+}
+
+/* Masterpiece Visual Showcase Frame */
+.hero-visual-col {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-showcase-card {
+  position: relative;
+  width: 100%;
+  max-width: 530px;
+}
+
+.hero-image-wrapper {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 20px 48px rgba(51, 36, 27, 0.14), 0 4px 12px rgba(51, 36, 27, 0.06);
+  border: 1px solid var(--border-medium);
+  background: var(--bg-card);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.hero-image-wrapper:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 26px 56px rgba(51, 36, 27, 0.18), 0 6px 16px rgba(51, 36, 27, 0.08);
+}
+
+.hero-featured-img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4/3;
+  object-fit: cover;
   display: block;
-  width: 380px;
-  height: 280px;
-  max-width: 95vw;
-  filter: drop-shadow(0 10px 24px rgba(51, 36, 27, 0.09));
+}
+
+.hero-image-shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 60%);
+  pointer-events: none;
+}
+
+/* Floating Glass Badges */
+.floating-badge {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(214, 204, 190, 0.85);
+  border-radius: 12px;
+  padding: 10px 18px;
+  box-shadow: 0 10px 26px rgba(51, 36, 27, 0.12);
+  z-index: 3;
+  transition: transform 0.3s ease;
+}
+
+.floating-badge:hover {
+  transform: translateY(-2px);
+}
+
+.badge-coffee {
+  top: -16px;
+  right: -14px;
+}
+
+.badge-bakes {
+  bottom: -18px;
+  left: -14px;
+}
+
+.badge-emoji {
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
+.badge-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.badge-heading {
+  font-family: var(--font-serif);
+  font-size: 0.96rem;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.badge-sub {
+  font-size: 0.68rem;
+  color: var(--accent-terracotta);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  margin-top: 1px;
+}
+
+@media (max-width: 991px) {
+  .hero-split-layout {
+    grid-template-columns: 1fr;
+    gap: 46px;
+  }
+  .hero-copy-col {
+    align-items: center;
+    text-align: center;
+  }
+  .hero-subtitle {
+    margin: 0 auto 28px;
+  }
+  .hero-sanctuary-meta {
+    justify-content: center;
+  }
+  .badge-coffee {
+    top: -12px;
+    right: 4px;
+  }
+  .badge-bakes {
+    bottom: -14px;
+    left: 4px;
+  }
+}
+
+@media (max-width: 576px) {
+  .floating-badge {
+    padding: 8px 12px;
+  }
+  .badge-emoji {
+    font-size: 1.15rem;
+  }
+  .badge-heading {
+    font-size: 0.84rem;
+  }
+  .badge-sub {
+    font-size: 0.62rem;
+  }
 }
 
 /* ==========================================================
