@@ -22,8 +22,8 @@
 Open `index.html` in any web browser or run:
 
 ```bash
-git clone https://github.com/404existential/aura-cafe.git
-cd aura-cafe
+git clone https://github.com/404existential/AMARA.git
+cd AMARA
 ```
 
 ---
