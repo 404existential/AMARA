@@ -1,6 +1,7 @@
 /* ==========================================================
-   AMARA BOTANICAL ROASTERY & CAFÉ — BENGALURU
+   AMARA — Coffee Sanctuary & Slow Bakes — Bengaluru
    Warm Beige, Cream, Terracotta & Deep Espresso
+   Subtitle: Coffee Sanctuary & Slow Bakes
    ========================================================== */
 
 /* --- ROOT DESIGN TOKENS --- */
@@ -193,7 +194,7 @@ button, input, select, textarea {
 }
 
 /* ==========================================================
-   PRELOADER
+   PRELOADER (1.5 SECONDS)
    ========================================================== */
 .preloader {
   position: fixed;
@@ -203,7 +204,7 @@ button, input, select, textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.4s ease, visibility 0.4s ease;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
 .preloader.fade-out {
@@ -221,26 +222,35 @@ button, input, select, textarea {
 
 .preloader-monogram {
   font-family: var(--font-serif);
-  font-size: 2.2rem;
+  font-size: 2.4rem;
   letter-spacing: 0.24em;
   color: var(--text-main);
   font-weight: 600;
 }
 
+.preloader-sub {
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-terracotta);
+  margin-top: 6px;
+  font-weight: 600;
+}
+
 .preloader-bar {
-  width: 120px;
+  width: 130px;
   height: 2px;
   background: var(--border-medium);
   border-radius: 4px;
   overflow: hidden;
-  margin-top: 14px;
+  margin-top: 16px;
 }
 
 .preloader-progress {
   width: 0%;
   height: 100%;
   background: var(--accent-terracotta);
-  transition: width 0.12s ease;
+  transition: width 0.1s linear;
 }
 
 .scroll-progress-bar {
@@ -290,29 +300,44 @@ button, input, select, textarea {
 .nav-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .logo-mark {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border: 1.5px solid var(--accent-coffee);
   border-radius: 50%;
   font-family: var(--font-serif);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 600;
   color: var(--accent-coffee);
 }
 
+.logo-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
 .logo-text {
   font-family: var(--font-serif);
-  font-size: 1.5rem;
+  font-size: 1.45rem;
   letter-spacing: 0.16em;
   font-weight: 600;
   color: var(--text-main);
+  line-height: 1.1;
+}
+
+.logo-sub {
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-terracotta);
+  font-weight: 600;
+  margin-top: 1px;
 }
 
 .logo-dot {
@@ -428,11 +453,24 @@ button, input, select, textarea {
   margin-bottom: 28px;
 }
 
+.drawer-brand {
+  display: flex;
+  flex-direction: column;
+}
+
 .drawer-logo {
   font-family: var(--font-serif);
   font-size: 1.5rem;
   letter-spacing: 0.15em;
   color: var(--text-main);
+}
+
+.drawer-sub {
+  font-size: 0.65rem;
+  color: var(--accent-terracotta);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 2px;
 }
 
 .drawer-close {
@@ -471,11 +509,11 @@ button, input, select, textarea {
 }
 
 /* ==========================================================
-   HERO SECTION & CONTINUOUS POUR ANIMATION
+   HERO SECTION & CONTINUOUS CANVAS POUR ANIMATION
    ========================================================== */
 .hero-section {
   position: relative;
-  min-height: 94vh;
+  min-height: 96vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -495,7 +533,7 @@ button, input, select, textarea {
   height: 100%;
   object-fit: cover;
   object-position: center;
-  opacity: 0.38;
+  opacity: 0.36;
   filter: saturate(0.85);
 }
 
@@ -517,6 +555,20 @@ button, input, select, textarea {
   flex-direction: column;
   align-items: center;
   text-align: center;
+}
+
+.hero-brand-pill {
+  display: inline-block;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-terracotta);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--border-medium);
+  padding: 6px 16px;
+  border-radius: 30px;
+  margin-bottom: 16px;
 }
 
 .hero-title {
@@ -542,7 +594,7 @@ button, input, select, textarea {
   gap: 14px;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 34px;
+  margin-bottom: 28px;
 }
 
 .hero-btn {
@@ -551,145 +603,48 @@ button, input, select, textarea {
 }
 
 /* ==========================================================
-   CONTINUOUS COFFEE POUR ANIMATION (LARGER & SEAMLESS)
+   CANVAS CONTINUOUS POUR ENGINE (DYNAMIC FLUID + PARTICLES)
    ========================================================== */
-.continuous-pour-box {
+.canvas-pour-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-  margin-top: 6px;
+  margin-top: 4px;
+  cursor: pointer;
 }
 
-.pour-spout {
-  display: flex;
-  justify-content: center;
+#coffeePourCanvas {
+  display: block;
+  width: 300px;
+  height: 260px;
+  max-width: 90vw;
+  filter: drop-shadow(0 8px 18px rgba(51, 36, 27, 0.08));
 }
 
-.kettle-tip {
-  width: 16px;
-  height: 10px;
-  background: linear-gradient(180deg, #4d3a2c, #2b1f17);
-  border-radius: 4px 4px 1px 1px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-}
-
-.pour-stream-track {
-  width: 14px;
-  height: 64px;
-  display: flex;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.flowing-stream {
-  width: 4px;
-  height: 100%;
-  background: linear-gradient(180deg, #3d2112 0%, #7d4422 50%, #b85e35 100%);
-  border-radius: 2px;
-  box-shadow: 0 0 8px rgba(184, 94, 53, 0.45);
-  animation: liquidFlowShimmer 1.2s infinite linear;
-}
-
-@keyframes liquidFlowShimmer {
-  0% { transform: scaleY(1); opacity: 0.95; }
-  50% { transform: scaleY(1.02); opacity: 1; }
-  100% { transform: scaleY(1); opacity: 0.95; }
-}
-
-.pour-cup-wrap {
-  display: flex;
-  flex-direction: column;
+.pour-live-caption {
+  display: inline-flex;
   align-items: center;
-  position: relative;
-  margin-top: -2px;
+  gap: 7px;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 4px;
 }
 
-.ceramic-cup {
-  width: 82px;
-  height: 56px;
-  background: #fdfbf7;
-  border: 2.2px solid var(--border-medium);
-  border-top: none;
-  border-radius: 0 0 28px 28px;
-  position: relative;
-  overflow: visible;
-  box-shadow: 0 6px 16px rgba(51, 36, 27, 0.1);
+.live-pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent-terracotta);
+  box-shadow: 0 0 6px var(--accent-terracotta);
+  animation: pulseDot 1.8s infinite ease-in-out;
 }
 
-.cup-liquid-surface {
-  position: absolute;
-  inset: 0;
-  border-radius: 0 0 26px 26px;
-  background: linear-gradient(180deg, #783d1c 0%, #442415 100%);
-  overflow: hidden;
-}
-
-.crema-foam-ripple {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 8px;
-  background: linear-gradient(180deg, #dca86b, #b8733b);
-  border-radius: 4px;
-  animation: cremaUndulate 2.4s infinite ease-in-out;
-}
-
-@keyframes cremaUndulate {
-  0%, 100% { transform: scaleX(1); opacity: 0.9; }
-  50% { transform: scaleX(1.04); opacity: 1; }
-}
-
-.cup-handle-arc {
-  position: absolute;
-  right: -16px;
-  top: 10px;
-  width: 17px;
-  height: 26px;
-  border: 2.5px solid var(--border-medium);
-  border-left: none;
-  border-radius: 0 12px 14px 0;
-}
-
-.ceramic-saucer {
-  width: 108px;
-  height: 7px;
-  background: #fbf9f5;
-  border: 1.8px solid var(--border-medium);
-  border-radius: 8px;
-  margin-top: 3px;
-  box-shadow: 0 2px 6px rgba(51, 36, 27, 0.08);
-}
-
-/* Rising Steam Lines */
-.cup-steam-lines {
-  position: absolute;
-  top: -24px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  pointer-events: none;
-}
-
-.steam-line {
-  width: 2px;
-  height: 18px;
-  background: linear-gradient(180deg, rgba(184, 94, 53, 0.6), transparent);
-  border-radius: 2px;
-  animation: riseSteam 2.2s infinite ease-in-out;
-}
-
-.steam-line.s2 { animation-delay: 0.5s; }
-.steam-line.s3 { animation-delay: 1s; }
-
-@keyframes riseSteam {
-  0% { transform: translateY(4px) scaleY(0.7); opacity: 0; }
-  50% { opacity: 0.7; }
-  100% { transform: translateY(-14px) scaleY(1.2); opacity: 0; }
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.4); opacity: 0.4; }
 }
 
 /* ==========================================================
@@ -699,6 +654,56 @@ button, input, select, textarea {
   background-color: var(--bg-body);
   border-top: 1px solid var(--border-light);
   border-bottom: 1px solid var(--border-light);
+}
+
+.roaster-live-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  padding: 8px 18px;
+  border-radius: 30px;
+  font-size: 0.8rem;
+  color: var(--text-body);
+  margin: 0 auto 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.roaster-live-note i {
+  color: var(--accent-terracotta);
+}
+
+.taste-profiler-nav {
+  display: inline-flex;
+  gap: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  padding: 5px;
+  border-radius: 30px;
+  margin-bottom: 34px;
+  box-shadow: var(--shadow-sm);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.taste-pill {
+  padding: 7px 18px;
+  border-radius: 30px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.taste-pill:hover {
+  color: var(--text-main);
+}
+
+.taste-pill.active {
+  background: var(--accent-coffee);
+  color: #fff;
 }
 
 .minimal-menu-grid {
@@ -715,6 +720,12 @@ button, input, select, textarea {
   border-radius: 8px;
   padding: 28px 24px;
   box-shadow: var(--shadow-sm);
+  transition: opacity var(--transition-base), transform var(--transition-base);
+}
+
+.menu-clean-col.dimmed {
+  opacity: 0.35;
+  transform: scale(0.98);
 }
 
 .menu-col-title {
@@ -808,7 +819,7 @@ button, input, select, textarea {
 }
 
 /* ==========================================================
-   RESERVATIONS (WITH SPECIAL WANTS)
+   RESERVATIONS (WITH QUICK DATES & SPECIAL WANTS)
    ========================================================== */
 .reserve-section {
   background-color: var(--bg-body);
@@ -828,6 +839,16 @@ button, input, select, textarea {
 
 .res-top-header {
   margin-bottom: 24px;
+}
+
+.res-sub-tag {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--accent-terracotta);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  margin-top: -6px;
 }
 
 .simple-reserve-form {
@@ -879,6 +900,37 @@ button, input, select, textarea {
 }
 
 .g-pill input:checked + span {
+  background: var(--accent-coffee);
+  color: #fff;
+  border-color: var(--accent-coffee);
+}
+
+/* Quick Date Pills */
+.quick-date-pills {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.q-date-btn {
+  padding: 8px 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  border: 1px solid var(--border-medium);
+  border-radius: 6px;
+  background: var(--bg-body);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: center;
+}
+
+.q-date-btn:hover {
+  border-color: var(--accent-coffee);
+  color: var(--text-main);
+}
+
+.q-date-btn.active {
   background: var(--accent-coffee);
   color: #fff;
   border-color: var(--accent-coffee);
@@ -1063,6 +1115,15 @@ button, input, select, textarea {
 
 .ticket-item strong {
   color: var(--text-main);
+}
+
+.modal-action-row {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-action-row .btn {
+  flex: 1;
 }
 
 /* ==========================================================
@@ -1268,6 +1329,10 @@ button, input, select, textarea {
     padding: 68px 0;
   }
 
+  .quick-date-pills {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .res-row-2 {
     grid-template-columns: 1fr;
   }
@@ -1312,5 +1377,9 @@ button, input, select, textarea {
   .modal-card {
     max-width: calc(100vw - 32px);
     padding: 24px 16px;
+  }
+
+  .modal-action-row {
+    flex-direction: column;
   }
 }

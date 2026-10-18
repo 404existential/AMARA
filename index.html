@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AMARA Botanical Roastery & Café — Single-origin coffee, morning viennoiserie, and serene sunlit spaces in Indiranagar, Bengaluru.">
-  <title>AMARA | Roastery & Café — Bengaluru</title>
+  <meta name="description" content="AMARA — Coffee Sanctuary & Slow Bakes. Hand-roasted single-estate coffees, laminated morning viennoiserie, and serene courtyards in Indiranagar, Bengaluru.">
+  <title>AMARA | Coffee Sanctuary & Slow Bakes — Bengaluru</title>
 
   <!-- Google Fonts: Cormorant Garamond & Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,25 +18,29 @@
 </head>
 <body class="beige-theme">
 
-  <!-- ================= PRELOADER ================= -->
+  <!-- ================= PRELOADER (EXACTLY 1.5 SECONDS) ================= -->
   <div id="preloader" class="preloader">
     <div class="preloader-content">
       <div class="preloader-monogram">AMARA</div>
+      <div class="preloader-sub">Coffee Sanctuary & Slow Bakes</div>
       <div class="preloader-bar">
         <div class="preloader-progress" id="preloaderProgress"></div>
       </div>
     </div>
   </div>
 
-  <!-- Scroll Progress Indicator -->
+  <!-- Scroll Progress Bar -->
   <div id="scrollProgress" class="scroll-progress-bar"></div>
 
   <!-- ================= NAVIGATION ================= -->
   <header id="mainHeader" class="header">
     <nav class="nav-container">
-      <a href="#hero" class="nav-logo" aria-label="Amara Café Home">
+      <a href="#hero" class="nav-logo" aria-label="Amara Home">
         <span class="logo-mark">A</span>
-        <span class="logo-text">AMARA<span class="logo-dot">.</span></span>
+        <div class="logo-text-group">
+          <span class="logo-text">AMARA<span class="logo-dot">.</span></span>
+          <span class="logo-sub">Coffee Sanctuary & Slow Bakes</span>
+        </div>
       </a>
 
       <ul class="nav-links" id="navLinks">
@@ -65,7 +69,10 @@
   <div class="mobile-drawer-overlay" id="drawerOverlay"></div>
   <aside class="mobile-drawer" id="mobileDrawer">
     <div class="drawer-header">
-      <div class="drawer-logo">AMARA<span class="logo-dot">.</span></div>
+      <div class="drawer-brand">
+        <div class="drawer-logo">AMARA<span class="logo-dot">.</span></div>
+        <span class="drawer-sub">Coffee Sanctuary & Slow Bakes</span>
+      </div>
       <button class="drawer-close" id="drawerCloseBtn" aria-label="Close menu">&times;</button>
     </div>
     <ul class="drawer-links">
@@ -84,7 +91,7 @@
     </div>
   </aside>
 
-  <!-- ================= HERO SECTION WITH CONTINUOUS POUR ================= -->
+  <!-- ================= HERO SECTION WITH CONTINUOUS POUR SIMULATION ================= -->
   <section id="hero" class="hero-section">
     <div class="hero-bg-container">
       <img src="assets/images/cafe-interior.jpg" alt="Café interior" class="hero-bg-image">
@@ -93,12 +100,16 @@
 
     <div class="hero-content-wrapper">
       <div class="container hero-container">
-        <h1 class="hero-title reveal-fade">
+        <div class="hero-brand-pill reveal-fade">
+          <span>Coffee Sanctuary & Slow Bakes</span>
+        </div>
+
+        <h1 class="hero-title reveal-fade delay-1">
           A Sunlit Sanctuary of <br>
           <span class="title-italic">Craft Coffee & Slow Bakes</span>
         </h1>
 
-        <p class="hero-subtitle reveal-fade delay-1">
+        <p class="hero-subtitle reveal-fade delay-2">
           Hand-roasted hill coffees, warm morning croissants, and tranquil spaces in Bengaluru.
         </p>
 
@@ -107,27 +118,12 @@
           <a href="#reserve" class="btn btn-outline hero-btn">Reserve a Table</a>
         </div>
 
-        <!-- Continuous Coffee Pour Feature (Larger & Seamless) -->
-        <div class="continuous-pour-box reveal-fade delay-3">
-          <div class="pour-spout">
-            <div class="kettle-tip"></div>
-          </div>
-          <div class="pour-stream-track">
-            <div class="flowing-stream"></div>
-          </div>
-          <div class="pour-cup-wrap">
-            <div class="ceramic-cup">
-              <div class="cup-steam-lines">
-                <span class="steam-line s1"></span>
-                <span class="steam-line s2"></span>
-                <span class="steam-line s3"></span>
-              </div>
-              <div class="cup-liquid-surface">
-                <div class="crema-foam-ripple"></div>
-              </div>
-              <div class="cup-handle-arc"></div>
-            </div>
-            <div class="ceramic-saucer"></div>
+        <!-- Continuous Fluid Coffee Pour (Live HTML5 Canvas with fluid physics, ripples & rising steam) -->
+        <div class="canvas-pour-container reveal-fade delay-3">
+          <canvas id="coffeePourCanvas" width="300" height="260" aria-label="Continuous coffee pouring simulation"></canvas>
+          <div class="pour-live-caption">
+            <span class="live-pulse"></span>
+            <span>Continuous Slow Extraction · Fresh on the Bar</span>
           </div>
         </div>
       </div>
@@ -138,14 +134,28 @@
   <section id="menu" class="section menu-section">
     <div class="container">
       <div class="section-header text-center reveal-fade">
-        <span class="editorial-label">CURATED MENU</span>
+        <span class="editorial-label">COFFEE SANCTUARY & SLOW BAKES</span>
         <h2 class="section-title">The Daily Selections</h2>
+
+        <!-- Fresh Roaster's Note -->
+        <div class="roaster-live-note">
+          <i class="fa-solid fa-fire-burner"></i>
+          <span><strong>Today's Roast:</strong> Balur Estate Washed Lot · Notes of raw honey, sweet lime & dark cacao</span>
+        </div>
+
+        <!-- Quick Taste Profiler -->
+        <div class="taste-profiler-nav" id="tasteProfilerNav">
+          <button class="taste-pill active" data-filter="all">All Selections</button>
+          <button class="taste-pill" data-filter="coffee">Coffee</button>
+          <button class="taste-pill" data-filter="bakes">Bakes & Food</button>
+          <button class="taste-pill" data-filter="cold">Cold & Teas</button>
+        </div>
       </div>
 
-      <!-- Clean 3-Column Minimal Menu -->
-      <div class="minimal-menu-grid reveal-fade delay-1">
+      <!-- Clean 3-Column Minimal Menu Grid -->
+      <div class="minimal-menu-grid reveal-fade delay-1" id="menuGridContainer">
         <!-- Column 1: Espresso & Brews -->
-        <div class="menu-clean-col">
+        <div class="menu-clean-col" data-col-category="coffee">
           <h3 class="menu-col-title">Coffee</h3>
           <div class="menu-clean-list">
             <div class="clean-item">
@@ -172,7 +182,7 @@
         </div>
 
         <!-- Column 2: Bakery & Hearth -->
-        <div class="menu-clean-col">
+        <div class="menu-clean-col" data-col-category="bakes">
           <h3 class="menu-col-title">Bakes & Food</h3>
           <div class="menu-clean-list">
             <div class="clean-item">
@@ -199,7 +209,7 @@
         </div>
 
         <!-- Column 3: Cold & Botanicals -->
-        <div class="menu-clean-col">
+        <div class="menu-clean-col" data-col-category="cold">
           <h3 class="menu-col-title">Cold & Teas</h3>
           <div class="menu-clean-list">
             <div class="clean-item">
@@ -265,6 +275,7 @@
         <div class="res-top-header text-center">
           <span class="editorial-label">TABLE DESK</span>
           <h2 class="section-title">Book a Table</h2>
+          <span class="res-sub-tag">AMARA · Coffee Sanctuary & Slow Bakes</span>
         </div>
 
         <form id="simpleReserveForm" class="simple-reserve-form">
@@ -295,10 +306,21 @@
             </div>
           </div>
 
+          <!-- Date Quick-Picks -->
+          <div class="res-group">
+            <label class="res-label">Quick Date Pick</label>
+            <div class="quick-date-pills">
+              <button type="button" class="q-date-btn active" data-date-offset="0">Today</button>
+              <button type="button" class="q-date-btn" data-date-offset="1">Tomorrow</button>
+              <button type="button" class="q-date-btn" data-date-weekend="sat">This Saturday</button>
+              <button type="button" class="q-date-btn" data-date-weekend="sun">This Sunday</button>
+            </div>
+          </div>
+
           <!-- Date & Time Row -->
           <div class="res-row-2">
             <div class="res-group">
-              <label class="res-label" for="resDate">Date</label>
+              <label class="res-label" for="resDate">Selected Date</label>
               <input type="date" id="resDate" required class="res-input">
             </div>
             <div class="res-group">
@@ -325,7 +347,7 @@
             </div>
           </div>
 
-          <!-- Special Wants / Requests (Replaces sunlit part) -->
+          <!-- Special Wants / Requests -->
           <div class="res-group">
             <label class="res-label" for="resSpecialWants">Special Wants / Requests</label>
             <input type="text" id="resSpecialWants" placeholder="Window table, quiet spot for reading, anniversary, high chair..." class="res-input">
@@ -363,7 +385,7 @@
 
           <div class="founder-note">
             <span class="founder-name">The Roasting & Kitchen Team</span>
-            <span class="founder-meta">AMARA Coffee Sanctuary · Indiranagar</span>
+            <span class="founder-meta">AMARA · Coffee Sanctuary & Slow Bakes</span>
           </div>
         </div>
 
@@ -390,7 +412,12 @@
         <!-- Injected via JavaScript -->
       </div>
 
-      <button class="btn btn-primary btn-block" id="dismissTicketBtn">Got It</button>
+      <div class="modal-action-row">
+        <button class="btn btn-outline" id="copyDetailsBtn">
+          <i class="fa-regular fa-copy"></i> Copy Details
+        </button>
+        <button class="btn btn-primary" id="dismissTicketBtn">Got It</button>
+      </div>
     </div>
   </div>
 
@@ -401,7 +428,7 @@
         <div class="footer-col brand-col">
           <div class="footer-logo">AMARA<span class="logo-dot">.</span></div>
           <p class="footer-tagline">
-            Specialty coffee roastery and bakehouse on 12th Main, Indiranagar, Bengaluru.
+            Coffee Sanctuary & Slow Bakes on 12th Main, Indiranagar, Bengaluru.
           </p>
         </div>
 
@@ -424,7 +451,7 @@
       </div>
 
       <div class="footer-bottom">
-        <p>&copy; 2026 AMARA Botanical Roastery & Café. Crafted for Bengaluru.</p>
+        <p>&copy; 2026 AMARA · Coffee Sanctuary & Slow Bakes. Crafted for Bengaluru.</p>
         <p class="footer-subtext">All prices in INR (₹). Inclusive of all taxes.</p>
       </div>
     </div>

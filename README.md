@@ -1,6 +1,6 @@
-# AMARA | Botanical Roastery & Café — Bengaluru ☕🌿
+# AMARA | Coffee Sanctuary & Slow Bakes — Bengaluru ☕🌿
 
-> Artisanal specialty coffee, slow bakery, and serene sunlit spaces on 12th Main, Indiranagar, Bengaluru.
+> Single-estate coffees, morning slow bakes, and peaceful sunlit courtyards on 12th Main, Indiranagar, Bengaluru.
 
 ![AMARA Café Interior](assets/images/cafe-interior.jpg)
 
