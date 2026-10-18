@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMARA · Owner Command Portal</title>
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
+
+  <!-- Google Fonts & Font Awesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="stylesheet" href="owner.css">
+</head>
+<body class="owner-portal-body">
+
+  <!-- ================= 1. GATEWAY LOCK SCREEN ================= -->
+  <div class="gateway-screen" id="gatewayScreen">
+    <div class="gateway-card">
+      <div class="gateway-brand">
+        <span class="portal-mark">A</span>
+        <div>
+          <h1 class="gateway-title">AMARA<span class="logo-dot">.</span></h1>
+          <p class="gateway-sub">Private Sanctuary Operations Desk</p>
+        </div>
+      </div>
+
+      <div class="gateway-divider"></div>
+
+      <!-- Lockout Alert Banner -->
+      <div class="lockout-banner" id="lockoutBanner" style="display: none;">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <div>
+          <strong>Security Lockdown Active</strong>
+          <p id="lockoutTimerMsg">Too many incorrect attempts. Retry in 15:00.</p>
+        </div>
+      </div>
+
+      <form id="gatewayForm" class="gateway-form">
+        <div class="form-group">
+          <label for="masterPassInput">Master Passphrase</label>
+          <div class="pass-input-wrapper">
+            <input type="password" id="masterPassInput" class="gateway-input" placeholder="Enter owner master passphrase" required autocomplete="current-password" autofocus>
+            <button type="button" class="pass-toggle-btn" id="gatewayPassToggle" aria-label="Toggle password visibility">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="gateway-attempts-line" id="gatewayAttemptsLine">
+          <i class="fa-solid fa-shield-halved"></i>
+          <span>Attempts remaining: <strong id="attemptsCountText">5</strong></span>
+        </div>
+
+        <div class="gateway-error-msg" id="gatewayErrorMsg" style="display: none;"></div>
+
+        <button type="submit" class="btn btn-portal-primary" id="gatewayUnlockBtn">
+          <i class="fa-solid fa-lock-open"></i> Authenticate & Enter Desk
+        </button>
+      </form>
+
+      <div class="gateway-footer">
+        <a href="index.html" class="gateway-return-link">
+          <i class="fa-solid fa-arrow-left"></i> Return to Public Café
+        </a>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= 2. OWNER COMMAND CENTER DASHBOARD ================= -->
+  <div class="portal-layout" id="portalLayout" style="display: none;">
+    <!-- Top Navigation Bar -->
+    <header class="portal-header">
+      <div class="header-left">
+        <div class="header-brand">
+          <span class="portal-mark-sm">A</span>
+          <div>
+            <div class="portal-brand-title">AMARA<span class="logo-dot">.</span> <span class="badge-role">Owner Desk</span></div>
+            <span class="portal-brand-sub">Indiranagar Roastery & Kitchen Operations</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <div class="live-clock" id="liveClockDisplay">
+          <i class="fa-regular fa-clock"></i> <span id="clockTimeText">--:-- --</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <a href="index.html" target="_blank" class="btn btn-portal-outline btn-sm" title="View Public Website in New Tab">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> <span>View Live Site</span>
+        </a>
+        <button type="button" class="btn btn-portal-outline btn-sm" id="portalSignOutBtn" title="Lock Desk and End Session">
+          <i class="fa-solid fa-lock"></i> <span>Lock Desk</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Navigation Bar -->
+    <nav class="portal-nav-bar" role="tablist">
+      <button class="nav-tab-item active" data-tab="menu" role="tab" aria-selected="true">
+        <i class="fa-solid fa-mug-saucer"></i>
+        <span>Menu & Bar (<strong id="tabBadgeMenu">15</strong>)</span>
+      </button>
+      <button class="nav-tab-item" data-tab="photos" role="tab" aria-selected="false">
+        <i class="fa-solid fa-images"></i>
+        <span>Atmosphere Spaces (<strong id="tabBadgePhotos">3</strong>)</span>
+      </button>
+      <button class="nav-tab-item" data-tab="reservations" role="tab" aria-selected="false">
+        <i class="fa-solid fa-calendar-check"></i>
+        <span>Table Reservations (<strong id="tabBadgeRes">0</strong>)</span>
+      </button>
+      <button class="nav-tab-item" data-tab="settings" role="tab" aria-selected="false">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Security & Settings</span>
+      </button>
+    </nav>
+
+    <!-- Portal Body & Panels -->
+    <main class="portal-main">
+
+      <!-- ================= TAB 1: MENU & BAR MANAGER ================= -->
+      <section class="portal-panel active" id="panelMenu" role="tabpanel">
+        <div class="panel-grid-2">
+          <!-- Add New Item Card -->
+          <div class="portal-card form-card">
+            <div class="card-header">
+              <i class="fa-solid fa-plus-circle"></i>
+              <h3>Add New Menu Item</h3>
+            </div>
+            <form id="addMenuForm" class="portal-form">
+              <div class="form-group">
+                <label for="menuItemName">Item Name</label>
+                <input type="text" id="menuItemName" class="form-input" placeholder="e.g. Cardamom Brioche, Nitro Cold Brew" required>
+              </div>
+
+              <div class="form-row-2">
+                <div class="form-group">
+                  <label for="menuItemPrice">Price (₹)</label>
+                  <input type="number" id="menuItemPrice" class="form-input" placeholder="280" min="10" max="9999" required>
+                </div>
+                <div class="form-group">
+                  <label for="menuItemCat">Category</label>
+                  <select id="menuItemCat" class="form-input" required>
+                    <option value="coffee">Coffee</option>
+                    <option value="bakes">Bakes & Food</option>
+                    <option value="cold">Cold & Teas</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="toggle-checkbox-label">
+                  <input type="checkbox" id="menuItemStock" checked>
+                  <span>Immediately Available (In Stock)</span>
+                </label>
+              </div>
+
+              <button type="submit" class="btn btn-portal-primary btn-block">
+                <i class="fa-solid fa-plus"></i> Add to Live Public Menu
+              </button>
+            </form>
+          </div>
+
+          <!-- Existing Menu Items Table -->
+          <div class="portal-card list-card">
+            <div class="card-header flex-between">
+              <div>
+                <i class="fa-solid fa-list-check"></i>
+                <h3>Current Menu Selections</h3>
+              </div>
+              <div class="header-filters">
+                <select id="menuCategoryFilter" class="form-input form-input-sm" aria-label="Filter category">
+                  <option value="all">All Categories</option>
+                  <option value="coffee">Coffee Only</option>
+                  <option value="bakes">Bakes & Food</option>
+                  <option value="cold">Cold & Teas</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="menu-items-table-wrap">
+              <table class="portal-table" id="menuItemsTable">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Dish / Brew</th>
+                    <th>Price</th>
+                    <th>Availability</th>
+                    <th class="text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="menuTableBody">
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ================= TAB 2: ATMOSPHERE SPACES ================= -->
+      <section class="portal-panel" id="panelPhotos" role="tabpanel">
+        <div class="panel-grid-2">
+          <!-- Add Photo Card -->
+          <div class="portal-card form-card">
+            <div class="card-header">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <h3>Add Atmosphere Space Photo</h3>
+            </div>
+            <form id="addPhotoForm" class="portal-form">
+              <div class="form-group">
+                <label for="photoSpaceTitle">Space / Area Title</label>
+                <input type="text" id="photoSpaceTitle" class="form-input" placeholder="e.g. The Courtyard Atrium, Sunlit Roaster" required>
+              </div>
+
+              <div class="form-group">
+                <label>Photo Upload Source</label>
+                <div class="radio-pill-group">
+                  <label class="radio-pill">
+                    <input type="radio" name="photoSourceRadio" value="file" checked>
+                    <span>Upload Local File</span>
+                  </label>
+                  <label class="radio-pill">
+                    <input type="radio" name="photoSourceRadio" value="url">
+                    <span>Direct Image URL</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Local File Dropzone -->
+              <div class="form-group" id="photoLocalGroup">
+                <label for="photoFileInput">Device Photo</label>
+                <div class="photo-dropzone" id="photoDropzone">
+                  <i class="fa-regular fa-image"></i>
+                  <span id="photoDropzonePrompt">Click or drag & drop photo here</span>
+                  <input type="file" id="photoFileInput" accept="image/*" class="file-hidden">
+                </div>
+              </div>
+
+              <!-- URL Input -->
+              <div class="form-group" id="photoUrlGroup" style="display: none;">
+                <label for="photoUrlInput">Image URL / Path</label>
+                <input type="text" id="photoUrlInput" class="form-input" placeholder="https://... or assets/images/...">
+              </div>
+
+              <button type="submit" class="btn btn-portal-primary btn-block">
+                <i class="fa-solid fa-image"></i> Publish to Live Gallery
+              </button>
+            </form>
+          </div>
+
+          <!-- Existing Spaces Grid -->
+          <div class="portal-card list-card">
+            <div class="card-header flex-between">
+              <div>
+                <i class="fa-solid fa-panorama"></i>
+                <h3>Active Atmosphere Spaces</h3>
+              </div>
+              <span class="badge-count" id="photoCountBadge">3 Spaces</span>
+            </div>
+
+            <div class="spaces-gallery-grid" id="spacesGalleryGrid">
+              <!-- Injected via JavaScript -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ================= TAB 3: TABLE RESERVATIONS ================= -->
+      <section class="portal-panel" id="panelReservations" role="tabpanel">
+        <!-- KPI Metrics Grid -->
+        <div class="kpi-metrics-grid">
+          <div class="kpi-card total">
+            <div class="kpi-icon"><i class="fa-regular fa-calendar-days"></i></div>
+            <div class="kpi-content">
+              <span class="kpi-value" id="kpiTotal">0</span>
+              <span class="kpi-label">Total Covers</span>
+            </div>
+          </div>
+          <div class="kpi-card confirmed">
+            <div class="kpi-icon"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="kpi-content">
+              <span class="kpi-value" id="kpiConfirmed">0</span>
+              <span class="kpi-label">Confirmed</span>
+            </div>
+          </div>
+          <div class="kpi-card seated">
+            <div class="kpi-icon"><i class="fa-solid fa-chair"></i></div>
+            <div class="kpi-content">
+              <span class="kpi-value" id="kpiSeated">0</span>
+              <span class="kpi-label">Seated Now</span>
+            </div>
+          </div>
+          <div class="kpi-card cancelled">
+            <div class="kpi-icon"><i class="fa-regular fa-circle-xmark"></i></div>
+            <div class="kpi-content">
+              <span class="kpi-value" id="kpiCancelled">0</span>
+              <span class="kpi-label">Cancelled</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reservation Toolbar -->
+        <div class="res-toolbar-card">
+          <div class="res-search-wrap">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="resSearchInput" class="res-search-input" placeholder="Search by name, phone (+91), or Ref #...">
+          </div>
+
+          <div class="res-status-filters" role="group" aria-label="Status Filters">
+            <button type="button" class="filter-chip active" data-res-filter="all">All</button>
+            <button type="button" class="filter-chip" data-res-filter="Confirmed">Confirmed</button>
+            <button type="button" class="filter-chip" data-res-filter="Seated">Seated</button>
+            <button type="button" class="filter-chip" data-res-filter="Cancelled">Cancelled</button>
+          </div>
+
+          <div class="res-action-buttons">
+            <button type="button" class="btn btn-portal-outline btn-sm" id="toggleWalkInFormBtn">
+              <i class="fa-solid fa-user-plus"></i> <span>+ Walk-In</span>
+            </button>
+            <button type="button" class="btn btn-portal-outline btn-sm" id="copySheetBtn" title="Copy clean sheet for barista & floor staff">
+              <i class="fa-regular fa-clipboard"></i> <span>Copy Sheet</span>
+            </button>
+            <button type="button" class="btn btn-portal-outline btn-sm" id="exportCsvBtn" title="Download spreadsheet of bookings">
+              <i class="fa-solid fa-file-csv"></i> <span>Export CSV</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Collapsible Walk-In / Telephone Booking Form -->
+        <div class="portal-card walkin-card" id="walkInCard" style="display: none;">
+          <div class="card-header flex-between">
+            <h4><i class="fa-solid fa-phone"></i> Record Walk-In / Phone Table</h4>
+            <button type="button" class="close-card-btn" id="closeWalkInBtn">&times;</button>
+          </div>
+          <form id="walkInForm" class="portal-form">
+            <div class="form-row-2">
+              <div class="form-group">
+                <label for="walkInName">Guest Name</label>
+                <input type="text" id="walkInName" class="form-input" placeholder="e.g. Vikram Chandra" required>
+              </div>
+              <div class="form-group">
+                <label for="walkInPhone">Phone Number</label>
+                <input type="tel" id="walkInPhone" class="form-input" placeholder="+91 98450 12345" required>
+              </div>
+            </div>
+            <div class="form-row-3">
+              <div class="form-group">
+                <label for="walkInDate">Date</label>
+                <input type="date" id="walkInDate" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label for="walkInTime">Time Slot</label>
+                <select id="walkInTime" class="form-input" required>
+                  <option value="08:30 AM">08:30 AM</option>
+                  <option value="11:00 AM">11:00 AM</option>
+                  <option value="01:30 PM">01:30 PM</option>
+                  <option value="04:30 PM">04:30 PM</option>
+                  <option value="07:00 PM">07:00 PM</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="walkInGuests">Party Size</label>
+                <select id="walkInGuests" class="form-input" required>
+                  <option value="1">1 Guest</option>
+                  <option value="2" selected>2 Guests</option>
+                  <option value="4">4 Guests</option>
+                  <option value="6+">6+ Guests</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="walkInNotes">Seating Notes / Wants</label>
+              <input type="text" id="walkInNotes" class="form-input" placeholder="e.g. Courtyard corner, quiet table for laptop">
+            </div>
+            <button type="submit" class="btn btn-portal-primary">
+              <i class="fa-solid fa-check"></i> Confirm & Seat Guest
+            </button>
+          </form>
+        </div>
+
+        <!-- Reservations Table -->
+        <div class="portal-card res-list-card">
+          <div class="res-table-wrap">
+            <table class="portal-table">
+              <thead>
+                <tr>
+                  <th>Booking Ref</th>
+                  <th>Guest</th>
+                  <th>Date & Time</th>
+                  <th>Covers</th>
+                  <th>Special Wants</th>
+                  <th>Status</th>
+                  <th class="text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="resTableBody">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ================= TAB 4: SECURITY & SETTINGS ================= -->
+      <section class="portal-panel" id="panelSettings" role="tabpanel">
+        <div class="panel-grid-2">
+          <!-- Change Master Passphrase Card -->
+          <div class="portal-card form-card">
+            <div class="card-header">
+              <i class="fa-solid fa-key"></i>
+              <h3>Change Master Passphrase</h3>
+            </div>
+            <p class="card-desc">
+              Update your master passphrase. The key is cryptographically hashed with SHA-256 before being stored.
+            </p>
+            <form id="changePassForm" class="portal-form">
+              <div class="form-group">
+                <label for="currentPassInput">Current Master Passphrase</label>
+                <input type="password" id="currentPassInput" class="form-input" placeholder="Enter current passphrase" required autocomplete="current-password">
+              </div>
+              <div class="form-group">
+                <label for="newPassInput">New Master Passphrase</label>
+                <input type="password" id="newPassInput" class="form-input" placeholder="Enter strong new passphrase" minlength="8" required autocomplete="new-password">
+                <small class="form-hint">At least 8 characters. Mix upper, lower, numbers and symbols.</small>
+              </div>
+              <div class="form-group">
+                <label for="confirmNewPassInput">Confirm New Passphrase</label>
+                <input type="password" id="confirmNewPassInput" class="form-input" placeholder="Re-enter new passphrase" minlength="8" required autocomplete="new-password">
+              </div>
+              <button type="submit" class="btn btn-portal-primary btn-block">
+                <i class="fa-solid fa-shield-check"></i> Update Master Key
+              </button>
+            </form>
+          </div>
+
+          <!-- Data Backups & Reset Card -->
+          <div class="portal-card">
+            <div class="card-header">
+              <i class="fa-solid fa-database"></i>
+              <h3>Data Backups & Reset</h3>
+            </div>
+            <p class="card-desc">
+              Export a complete snapshot of all café data (Menu, Atmosphere Photos, and Bookings) or restore the café to default state.
+            </p>
+
+            <div class="settings-actions-list">
+              <div class="settings-action-item">
+                <div>
+                  <strong>Export Full Backup (JSON)</strong>
+                  <p>Download a complete local file containing all menu items, photos, and bookings.</p>
+                </div>
+                <button type="button" class="btn btn-portal-outline btn-sm" id="exportBackupBtn">
+                  <i class="fa-solid fa-download"></i> Backup JSON
+                </button>
+              </div>
+
+              <div class="settings-action-item">
+                <div>
+                  <strong>Restore Café Defaults</strong>
+                  <p>Resets all menu items, spaces, and sample reservations to original AMARA café state.</p>
+                </div>
+                <button type="button" class="btn btn-portal-danger btn-sm" id="resetDefaultsBtn">
+                  <i class="fa-solid fa-rotate-left"></i> Reset Defaults
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="portalToastContainer"></div>
+
+  <script src="owner.js"></script>
+</body>
+</html>
