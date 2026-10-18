@@ -41,7 +41,7 @@
       <a href="#hero" class="nav-logo" aria-label="Amara Home">
         <span class="logo-mark">A</span>
         <div class="logo-text-group">
-          <span class="logo-text">AMARA<span class="logo-dot">.</span></span>
+          <span class="logo-text">AMARA<span class="logo-dot" id="secretLogoDot" title="">.</span></span>
           <span class="logo-sub">Coffee Sanctuary & Slow Bakes</span>
         </div>
       </a>
@@ -58,12 +58,6 @@
         <a href="#reserve" class="btn btn-primary btn-nav">
           <span>Book a Table</span>
         </a>
-
-        <!-- Owner Studio Desk Trigger -->
-        <button class="btn btn-outline btn-owner-badge" id="openOwnerPortalBtn" title="Owner Management Studio" aria-label="Owner Studio">
-          <i class="fa-solid fa-sliders"></i>
-          <span class="owner-badge-text">Owner Desk</span>
-        </button>
 
         <button class="mobile-toggle" id="mobileMenuBtn" aria-label="Toggle navigation">
           <span></span>
@@ -93,9 +87,6 @@
     </ul>
     <div class="drawer-footer">
       <a href="#reserve" class="btn btn-primary btn-block" id="drawerReserveBtn">Book a Table</a>
-      <button class="btn btn-outline btn-block" id="drawerOwnerBtn">
-        <i class="fa-solid fa-sliders"></i> Owner Desk
-      </button>
       <div class="drawer-meta">
         <p><i class="fa-solid fa-location-dot"></i> Indiranagar, Bengaluru</p>
         <p><i class="fa-solid fa-clock"></i> 7:30 AM – 10:30 PM Daily</p>
@@ -431,11 +422,8 @@
       </div>
 
       <div class="footer-bottom">
-        <p>&copy; 2026 AMARA · Coffee Sanctuary & Slow Bakes. Crafted for Bengaluru.</p>
+        <p>&copy; 2026 AMARA · Coffee Sanctuary & Slow Bakes. Crafted for Bengaluru<span class="secret-dot" id="secretFooterDot">.</span></p>
         <p class="footer-subtext">All prices in INR (₹). Inclusive of all taxes.</p>
-        <button class="footer-owner-link" id="footerOwnerBtn">
-          <i class="fa-solid fa-lock"></i> <span>Owner Portal</span>
-        </button>
       </div>
     </div>
   </footer>
@@ -482,6 +470,9 @@
         </div>
 
         <div class="studio-header-actions">
+          <button type="button" class="btn btn-outline studio-btn-sm" id="studioLockBtn" title="Lock Desk and End Session">
+            <i class="fa-solid fa-lock"></i> <span>Lock Desk</span>
+          </button>
           <button type="button" class="btn btn-outline studio-btn-sm" id="studioResetDefaultsBtn" title="Reset Menu & Spaces to Café Defaults">
             <i class="fa-solid fa-rotate-left"></i> <span>Reset Defaults</span>
           </button>
@@ -738,6 +729,12 @@
       </div>
     </div>
   </div>
+
+  <!-- Owner Session Quick-Access Pill (Visible ONLY when session is unlocked) -->
+  <button type="button" class="owner-session-pill" id="ownerSessionFloatingPill" title="Open Owner Desk (Session Unlocked)">
+    <i class="fa-solid fa-sliders"></i>
+    <span>Owner Studio</span>
+  </button>
 
   <!-- Toast Container -->
   <div class="toast-container" id="toastContainer"></div>

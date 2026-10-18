@@ -1023,6 +1023,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const studioCloseBtn = document.getElementById('studioCloseBtn');
   const studioResetDefaultsBtn = document.getElementById('studioResetDefaultsBtn');
 
+  const ownerSessionFloatingPill = document.getElementById('ownerSessionFloatingPill');
+  const studioLockBtn = document.getElementById('studioLockBtn');
+
+  function updateOwnerFloatingPill() {
+    if (!ownerSessionFloatingPill) return;
+    const isUnlocked = sessionStorage.getItem('amara_owner_unlocked') === 'true';
+    ownerSessionFloatingPill.style.display = isUnlocked ? 'inline-flex' : 'none';
+  }
+
+  // Check on load
+  updateOwnerFloatingPill();
+
+  if (ownerSessionFloatingPill) {
+    ownerSessionFloatingPill.addEventListener('click', openStudioModal);
+  }
+
+  if (studioLockBtn) {
+    studioLockBtn.addEventListener('click', () => {
+      sessionStorage.removeItem('amara_owner_unlocked');
+      updateOwnerFloatingPill();
+      closeStudioModal();
+      showToast('Owner Desk locked. Session ended.');
+    });
+  }
+
   function openOwnerPortal() {
     closeDrawer();
     const isUnlocked = sessionStorage.getItem('amara_owner_unlocked') === 'true';
@@ -1059,6 +1084,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderStudioMenu();
       renderStudioPhotos();
       renderStudioReservations();
+      updateOwnerFloatingPill();
     }
   }
 
@@ -1069,9 +1095,68 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  if (openOwnerPortalBtn) openOwnerPortalBtn.addEventListener('click', openOwnerPortal);
-  if (drawerOwnerBtn) drawerOwnerBtn.addEventListener('click', openOwnerPortal);
-  if (footerOwnerBtn) footerOwnerBtn.addEventListener('click', openOwnerPortal);
+  // --- Secret Trigger 1: URL Hash (#owner, #admin, #desk, #sanctuary) ---
+  function checkUrlForOwnerDesk() {
+    const hash = window.location.hash.toLowerCase();
+    if (hash === '#owner' || hash === '#admin' || hash === '#desk' || hash === '#sanctuary' || hash === '#portal') {
+      openOwnerPortal();
+    }
+  }
+  checkUrlForOwnerDesk();
+  window.addEventListener('hashchange', checkUrlForOwnerDesk);
+
+  // --- Secret Trigger 2: Keyboard Shortcut (Ctrl+Shift+O, Cmd+Shift+O, or Alt+O) ---
+  document.addEventListener('keydown', (e) => {
+    const isO = e.key === 'O' || e.key === 'o';
+    if ((e.ctrlKey && e.shiftKey && isO) ||
+        (e.metaKey && e.shiftKey && isO) ||
+        (e.altKey && isO)) {
+      e.preventDefault();
+      openOwnerPortal();
+    }
+  });
+
+  // --- Secret Trigger 3: Secret Word Typing ("owner" or "amara") ---
+  let secretKeyBuffer = '';
+  document.addEventListener('keydown', (e) => {
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+    if (e.key.length === 1 && /[a-zA-Z]/.test(e.key)) {
+      secretKeyBuffer += e.key.toLowerCase();
+      if (secretKeyBuffer.length > 8) {
+        secretKeyBuffer = secretKeyBuffer.slice(-8);
+      }
+      if (secretKeyBuffer.endsWith('owner') || secretKeyBuffer.endsWith('amara') || secretKeyBuffer.endsWith('desk')) {
+        secretKeyBuffer = '';
+        openOwnerPortal();
+      }
+    }
+  });
+
+  // --- Secret Trigger 4: Triple-Click on AMARA Logo Dot or Footer Period ---
+  const secretLogoDot = document.getElementById('secretLogoDot');
+  const secretFooterDot = document.getElementById('secretFooterDot');
+  let secretClickCount = 0;
+  let secretClickTimer = null;
+
+  function registerSecretDotClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    secretClickCount++;
+    clearTimeout(secretClickTimer);
+    if (secretClickCount >= 3) {
+      secretClickCount = 0;
+      openOwnerPortal();
+    } else {
+      secretClickTimer = setTimeout(() => {
+        secretClickCount = 0;
+      }, 1000);
+    }
+  }
+
+  if (secretLogoDot) secretLogoDot.addEventListener('click', registerSecretDotClick);
+  if (secretFooterDot) secretFooterDot.addEventListener('click', registerSecretDotClick);
+
+  // Modal dismiss buttons
   if (ownerPinCloseBtn) ownerPinCloseBtn.addEventListener('click', closeOwnerPinModal);
   if (studioCloseBtn) studioCloseBtn.addEventListener('click', closeStudioModal);
 
@@ -1092,6 +1177,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const enteredPin = ownerPinInput ? ownerPinInput.value.trim() : '';
       if (enteredPin === OWNER_PIN) {
         sessionStorage.setItem('amara_owner_unlocked', 'true');
+        updateOwnerFloatingPill();
         closeOwnerPinModal();
         openStudioModal();
         showToast('Welcome, AMARA Roastery & Café Owner.');
