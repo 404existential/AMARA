@@ -527,6 +527,25 @@ document.addEventListener('DOMContentLoaded', () => {
       confirmationModal.classList.add('open');
       document.body.classList.add('lock-scroll');
       showToast(`Table confirmed for ${name}! Ref: #${bookingRef}`);
+
+      // Record in AMARA live reservations desk
+      const newReservationEntry = {
+        id: 'res_' + Date.now(),
+        bookingRef: bookingRef,
+        name: name,
+        phone: phone,
+        date: rawDate,
+        formattedDate: formattedDate,
+        time: time,
+        guests: guests,
+        specialWants: specialWants || '',
+        status: 'Confirmed',
+        createdAt: Date.now()
+      };
+      if (typeof addNewReservation === 'function') {
+        addNewReservation(newReservationEntry);
+      }
+
       simpleReserveForm.reset();
 
       // Reset date to today and radio to 2
@@ -566,6 +585,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape') {
       closeModal();
       closeDrawer();
+      if (typeof closeOwnerPinModal === 'function') closeOwnerPinModal();
+      if (typeof closeStudioModal === 'function') closeStudioModal();
     }
   });
 
@@ -629,4 +650,839 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     revealElements.forEach(el => el.classList.add('revealed'));
   }
+
+
+  /* ==========================================================
+     10. OWNER MANAGEMENT STUDIO (MENU, PHOTOS & RESERVATIONS)
+     ========================================================== */
+
+  // --- Default datasets ---
+  const DEFAULT_MENU_ITEMS = [
+    // Coffee
+    { id: 'm1', name: 'Flat White', price: 260, category: 'coffee', inStock: true },
+    { id: 'm2', name: 'Cardamom Cortado', price: 280, category: 'coffee', inStock: true },
+    { id: 'm3', name: 'Cappuccino', price: 250, category: 'coffee', inStock: true },
+    { id: 'm4', name: 'Balur Estate V60', price: 320, category: 'coffee', inStock: true },
+    { id: 'm5', name: '24h Cold Drip', price: 330, category: 'coffee', inStock: true },
+    // Bakes & Food
+    { id: 'm6', name: 'Butter Croissant', price: 240, category: 'bakes', inStock: true },
+    { id: 'm7', name: 'Almond Frangipane', price: 320, category: 'bakes', inStock: true },
+    { id: 'm8', name: 'Chocolate Babka', price: 280, category: 'bakes', inStock: true },
+    { id: 'm9', name: 'Truffle Egg Brioche', price: 440, category: 'bakes', inStock: true },
+    { id: 'm10', name: 'Ricotta & Fig Toast', price: 390, category: 'bakes', inStock: true },
+    // Cold & Teas
+    { id: 'm11', name: 'Espresso Tonic', price: 320, category: 'cold', inStock: true },
+    { id: 'm12', name: 'Iced Uji Matcha', price: 360, category: 'cold', inStock: true },
+    { id: 'm13', name: 'Cascara Spritz', price: 290, category: 'cold', inStock: true },
+    { id: 'm14', name: 'Silver Needle White Tea', price: 280, category: 'cold', inStock: true },
+    { id: 'm15', name: 'Iced Oat Latte', price: 310, category: 'cold', inStock: true }
+  ];
+
+  const DEFAULT_GALLERY_PHOTOS = [
+    { id: 'p1', title: 'The Courtyard', url: 'assets/images/cafe-interior.jpg' },
+    { id: 'p2', title: 'The Coffee Bar', url: 'assets/images/space-bar.jpg' },
+    { id: 'p3', title: 'The Reading Lounge', url: 'assets/images/space-lounge.jpg' }
+  ];
+
+  const DEFAULT_RESERVATIONS = [
+    {
+      id: 'res_sample1',
+      bookingRef: 'BALUR-4192',
+      name: 'Aarav Mehta',
+      phone: '+91 98451 22891',
+      date: '2026-10-18',
+      formattedDate: 'Oct 18, 2026',
+      time: '08:30 AM',
+      guests: '2',
+      specialWants: 'Corner table by the courtyard garden',
+      status: 'Confirmed',
+      createdAt: Date.now() - 3600000
+    },
+    {
+      id: 'res_sample2',
+      bookingRef: 'SANCT-8821',
+      name: 'Dr. Priya Sen',
+      phone: '+91 97410 44923',
+      date: '2026-10-18',
+      formattedDate: 'Oct 18, 2026',
+      time: '11:00 AM',
+      guests: '4',
+      specialWants: 'Quiet spot for a morning discussion',
+      status: 'Seated',
+      createdAt: Date.now() - 7200000
+    },
+    {
+      id: 'res_sample3',
+      bookingRef: 'INDRA-9024',
+      name: 'Kabir & Ananya',
+      phone: '+91 99002 11482',
+      date: '2026-10-19',
+      formattedDate: 'Oct 19, 2026',
+      time: '04:30 PM',
+      guests: '2',
+      specialWants: 'Celebrating anniversary',
+      status: 'Confirmed',
+      createdAt: Date.now() - 10800000
+    }
+  ];
+
+  // --- Storage Helper Functions ---
+  function getStoredMenuItems() {
+    try {
+      const data = localStorage.getItem('amara_menu_items');
+      return data ? JSON.parse(data) : [...DEFAULT_MENU_ITEMS];
+    } catch (e) {
+      return [...DEFAULT_MENU_ITEMS];
+    }
+  }
+
+  function saveStoredMenuItems(items) {
+    try {
+      localStorage.setItem('amara_menu_items', JSON.stringify(items));
+    } catch (e) {
+      console.warn('Storage quota exceeded', e);
+    }
+  }
+
+  function getStoredGalleryPhotos() {
+    try {
+      const data = localStorage.getItem('amara_gallery_photos');
+      return data ? JSON.parse(data) : [...DEFAULT_GALLERY_PHOTOS];
+    } catch (e) {
+      return [...DEFAULT_GALLERY_PHOTOS];
+    }
+  }
+
+  function saveStoredGalleryPhotos(photos) {
+    try {
+      localStorage.setItem('amara_gallery_photos', JSON.stringify(photos));
+    } catch (e) {
+      console.warn('Storage quota exceeded', e);
+    }
+  }
+
+  function getStoredReservations() {
+    try {
+      const data = localStorage.getItem('amara_reservations');
+      return data ? JSON.parse(data) : [...DEFAULT_RESERVATIONS];
+    } catch (e) {
+      return [...DEFAULT_RESERVATIONS];
+    }
+  }
+
+  function saveStoredReservations(reservations) {
+    try {
+      localStorage.setItem('amara_reservations', JSON.stringify(reservations));
+    } catch (e) {
+      console.warn('Storage quota exceeded', e);
+    }
+  }
+
+  function addNewReservation(res) {
+    const list = getStoredReservations();
+    list.unshift(res);
+    saveStoredReservations(list);
+    renderStudioReservations();
+  }
+
+  function escapeHTML(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  // --- Public DOM Renderers ---
+  function renderPublicMenu() {
+    const container = document.getElementById('menuGridContainer');
+    if (!container) return;
+    const items = getStoredMenuItems();
+
+    const categories = [
+      { key: 'coffee', title: 'Coffee' },
+      { key: 'bakes', title: 'Bakes & Food' },
+      { key: 'cold', title: 'Cold & Teas' }
+    ];
+
+    container.innerHTML = categories.map(cat => {
+      const catItems = items.filter(it => it.category === cat.key);
+      const itemsHtml = catItems.map(item => `
+        <div class="clean-item ${item.inStock ? '' : 'is-sold-out'}">
+          <span class="item-name">
+            ${escapeHTML(item.name)}
+            ${item.inStock ? '' : '<span class="sold-out-tag">(Sold Out)</span>'}
+          </span>
+          <span class="item-price">₹${item.price}</span>
+        </div>
+      `).join('');
+
+      return `
+        <div class="menu-clean-col" data-col-category="${cat.key}">
+          <h3 class="menu-col-title">${cat.title}</h3>
+          <div class="menu-clean-list">
+            ${itemsHtml || '<p class="text-muted text-center" style="font-size:0.85rem;padding:12px;">No items listed in this category.</p>'}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderPublicGallery() {
+    const galleryGrid = document.getElementById('atmosphereGalleryGrid');
+    if (!galleryGrid) return;
+    const photos = getStoredGalleryPhotos();
+
+    galleryGrid.innerHTML = photos.map(photo => `
+      <div class="atmosphere-photo-card">
+        <img src="${escapeHTML(photo.url)}" alt="${escapeHTML(photo.title)}" loading="lazy" onerror="this.src='assets/images/cafe-interior.jpg'">
+        <h4 class="atmosphere-title">${escapeHTML(photo.title)}</h4>
+      </div>
+    `).join('');
+  }
+
+  // --- Studio DOM Renderers ---
+  function renderStudioMenu() {
+    const menuList = document.getElementById('studioMenuList');
+    const badge = document.getElementById('studioMenuBadge');
+    const totalBadge = document.getElementById('studioMenuTotalBadge');
+    const items = getStoredMenuItems();
+
+    if (badge) badge.textContent = items.length;
+    if (totalBadge) totalBadge.textContent = `${items.length} items`;
+    if (!menuList) return;
+
+    if (items.length === 0) {
+      menuList.innerHTML = `
+        <div class="res-empty-state">
+          <i class="fa-solid fa-mug-saucer"></i>
+          <p>No menu items yet. Use the form on the left to add your first brew or bake.</p>
+        </div>
+      `;
+      return;
+    }
+
+    menuList.innerHTML = items.map(item => {
+      const catClass = `cat-${item.category}`;
+      const catLabel = item.category === 'coffee' ? 'Coffee' : item.category === 'bakes' ? 'Bakes' : 'Cold';
+
+      return `
+        <div class="studio-menu-item-row ${item.inStock ? '' : 'is-sold-out'}" data-item-id="${item.id}">
+          <div class="menu-row-info">
+            <span class="menu-cat-pill ${catClass}">${catLabel}</span>
+            <div class="menu-item-title-box">
+              <span class="menu-item-name-text">${escapeHTML(item.name)}</span>
+              <span class="menu-item-price-text">₹${item.price}</span>
+            </div>
+          </div>
+          <div class="menu-row-actions">
+            <button type="button" class="btn-stock-toggle ${item.inStock ? 'in-stock' : 'sold-out'}" data-action="toggle-stock" data-item-id="${item.id}" title="Toggle Availability">
+              ${item.inStock ? '<i class="fa-solid fa-check"></i> In Stock' : '<i class="fa-solid fa-ban"></i> Sold Out'}
+            </button>
+            <button type="button" class="btn-action-icon" data-action="edit-price" data-item-id="${item.id}" title="Edit Price">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button type="button" class="btn-action-icon btn-danger" data-action="delete-item" data-item-id="${item.id}" title="Delete Item">
+              <i class="fa-regular fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function renderStudioPhotos() {
+    const photosGrid = document.getElementById('studioPhotosGrid');
+    const badge = document.getElementById('studioPhotoBadge');
+    const totalBadge = document.getElementById('studioPhotoTotalBadge');
+    const photos = getStoredGalleryPhotos();
+
+    if (badge) badge.textContent = photos.length;
+    if (totalBadge) totalBadge.textContent = `${photos.length} spaces`;
+    if (!photosGrid) return;
+
+    if (photos.length === 0) {
+      photosGrid.innerHTML = `
+        <div class="res-empty-state">
+          <i class="fa-regular fa-images"></i>
+          <p>No atmosphere photos yet. Upload or link an image on the left.</p>
+        </div>
+      `;
+      return;
+    }
+
+    photosGrid.innerHTML = photos.map(photo => `
+      <div class="studio-photo-card" data-photo-id="${photo.id}">
+        <img src="${escapeHTML(photo.url)}" alt="${escapeHTML(photo.title)}" class="studio-photo-thumb" onerror="this.src='assets/images/cafe-interior.jpg'">
+        <div class="studio-photo-caption">
+          <span class="studio-photo-title" title="${escapeHTML(photo.title)}">${escapeHTML(photo.title)}</span>
+          <button type="button" class="btn-action-icon btn-danger" data-action="delete-photo" data-photo-id="${photo.id}" title="Remove photo from gallery">
+            <i class="fa-regular fa-trash-can"></i>
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  let currentResFilter = 'all';
+  let currentResSearch = '';
+
+  function renderStudioReservations() {
+    const listEl = document.getElementById('studioReservationsList');
+    const resBadge = document.getElementById('studioResBadge');
+    const kpiTotal = document.getElementById('resKpiTotal');
+    const kpiConfirmed = document.getElementById('resKpiConfirmed');
+    const kpiSeated = document.getElementById('resKpiSeated');
+    const kpiCancelled = document.getElementById('resKpiCancelled');
+
+    const allBookings = getStoredReservations();
+
+    const confirmedCount = allBookings.filter(b => b.status === 'Confirmed').length;
+    const seatedCount = allBookings.filter(b => b.status === 'Seated').length;
+    const cancelledCount = allBookings.filter(b => b.status === 'Cancelled').length;
+
+    if (kpiTotal) kpiTotal.textContent = allBookings.length;
+    if (kpiConfirmed) kpiConfirmed.textContent = confirmedCount;
+    if (kpiSeated) kpiSeated.textContent = seatedCount;
+    if (kpiCancelled) kpiCancelled.textContent = cancelledCount;
+    if (resBadge) resBadge.textContent = allBookings.length;
+
+    if (!listEl) return;
+
+    let filtered = allBookings;
+    if (currentResFilter !== 'all') {
+      filtered = filtered.filter(b => b.status === currentResFilter);
+    }
+    if (currentResSearch.trim()) {
+      const q = currentResSearch.trim().toLowerCase();
+      filtered = filtered.filter(b => 
+        (b.name && b.name.toLowerCase().includes(q)) ||
+        (b.phone && b.phone.toLowerCase().includes(q)) ||
+        (b.bookingRef && b.bookingRef.toLowerCase().includes(q))
+      );
+    }
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = `
+        <div class="res-empty-state">
+          <i class="fa-regular fa-calendar-xmark"></i>
+          <p>No reservations found matching this view.</p>
+        </div>
+      `;
+      return;
+    }
+
+    listEl.innerHTML = filtered.map(b => `
+      <div class="res-card-row status-${(b.status || 'Confirmed').toLowerCase()}" data-res-id="${b.id}">
+        <div class="res-card-main">
+          <span class="res-card-ref">#${escapeHTML(b.bookingRef || 'AMARA')}</span>
+          <div class="res-card-guest">
+            <span class="res-guest-name">${escapeHTML(b.name)}</span>
+            <span class="res-guest-phone">${escapeHTML(b.phone)}</span>
+          </div>
+          <div class="res-card-time-slot">
+            <span class="res-time-badge">${escapeHTML(b.time)}</span>
+            <span class="res-date-sub">${escapeHTML(b.formattedDate || b.date)}</span>
+          </div>
+          <span class="res-party-badge">
+            <i class="fa-solid fa-user-group"></i> ${escapeHTML(String(b.guests))} ${b.guests === '1' ? 'Guest' : 'Guests'}
+          </span>
+          ${b.specialWants ? `<span class="res-special-note" title="${escapeHTML(b.specialWants)}"><i class="fa-regular fa-comment-dots"></i> "${escapeHTML(b.specialWants)}"</span>` : ''}
+        </div>
+        <div class="res-card-ctrls">
+          <select class="res-status-select" data-res-id="${b.id}" data-status="${b.status || 'Confirmed'}" aria-label="Change Reservation Status">
+            <option value="Confirmed" ${b.status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
+            <option value="Seated" ${b.status === 'Seated' ? 'selected' : ''}>Seated</option>
+            <option value="Cancelled" ${b.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+          </select>
+          <button type="button" class="btn-action-icon btn-danger" data-action="delete-res" data-res-id="${b.id}" title="Delete reservation entry">
+            <i class="fa-regular fa-trash-can"></i>
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Initial public render on startup
+  renderPublicMenu();
+  renderPublicGallery();
+
+  // --- Modal Elements & Controls ---
+  const openOwnerPortalBtn = document.getElementById('openOwnerPortalBtn');
+  const drawerOwnerBtn = document.getElementById('drawerOwnerBtn');
+  const footerOwnerBtn = document.getElementById('footerOwnerBtn');
+  const ownerPinModal = document.getElementById('ownerPinModal');
+  const ownerPinCloseBtn = document.getElementById('ownerPinCloseBtn');
+  const ownerPinForm = document.getElementById('ownerPinForm');
+  const ownerPinInput = document.getElementById('ownerPinInput');
+  const pinToggleBtn = document.getElementById('pinToggleBtn');
+  const pinErrorMessage = document.getElementById('pinErrorMessage');
+  const ownerStudioModal = document.getElementById('ownerStudioModal');
+  const studioCloseBtn = document.getElementById('studioCloseBtn');
+  const studioResetDefaultsBtn = document.getElementById('studioResetDefaultsBtn');
+
+  function openOwnerPortal() {
+    closeDrawer();
+    const isUnlocked = sessionStorage.getItem('amara_owner_unlocked') === 'true';
+    if (isUnlocked) {
+      openStudioModal();
+    } else {
+      openOwnerPinModal();
+    }
+  }
+
+  function openOwnerPinModal() {
+    if (ownerPinModal) {
+      ownerPinModal.classList.add('open');
+      document.body.classList.add('lock-scroll');
+      if (ownerPinInput) {
+        ownerPinInput.value = '';
+        setTimeout(() => ownerPinInput.focus(), 120);
+      }
+      if (pinErrorMessage) pinErrorMessage.style.display = 'none';
+    }
+  }
+
+  function closeOwnerPinModal() {
+    if (ownerPinModal) {
+      ownerPinModal.classList.remove('open');
+      document.body.classList.remove('lock-scroll');
+    }
+  }
+
+  function openStudioModal() {
+    if (ownerStudioModal) {
+      ownerStudioModal.classList.add('open');
+      document.body.classList.add('lock-scroll');
+      renderStudioMenu();
+      renderStudioPhotos();
+      renderStudioReservations();
+    }
+  }
+
+  function closeStudioModal() {
+    if (ownerStudioModal) {
+      ownerStudioModal.classList.remove('open');
+      document.body.classList.remove('lock-scroll');
+    }
+  }
+
+  if (openOwnerPortalBtn) openOwnerPortalBtn.addEventListener('click', openOwnerPortal);
+  if (drawerOwnerBtn) drawerOwnerBtn.addEventListener('click', openOwnerPortal);
+  if (footerOwnerBtn) footerOwnerBtn.addEventListener('click', openOwnerPortal);
+  if (ownerPinCloseBtn) ownerPinCloseBtn.addEventListener('click', closeOwnerPinModal);
+  if (studioCloseBtn) studioCloseBtn.addEventListener('click', closeStudioModal);
+
+  // PIN visibility toggle
+  if (pinToggleBtn && ownerPinInput) {
+    pinToggleBtn.addEventListener('click', () => {
+      const isPassword = ownerPinInput.type === 'password';
+      ownerPinInput.type = isPassword ? 'text' : 'password';
+      pinToggleBtn.innerHTML = isPassword ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>';
+    });
+  }
+
+  // Owner PIN check (Default: 1450)
+  const OWNER_PIN = '1450';
+  if (ownerPinForm) {
+    ownerPinForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const enteredPin = ownerPinInput ? ownerPinInput.value.trim() : '';
+      if (enteredPin === OWNER_PIN) {
+        sessionStorage.setItem('amara_owner_unlocked', 'true');
+        closeOwnerPinModal();
+        openStudioModal();
+        showToast('Welcome, AMARA Roastery & Café Owner.');
+      } else {
+        if (pinErrorMessage) {
+          pinErrorMessage.textContent = 'Incorrect PIN. Balur Estate altitude is 1450.';
+          pinErrorMessage.style.display = 'block';
+        }
+        if (ownerPinInput) {
+          ownerPinInput.select();
+        }
+      }
+    });
+  }
+
+  // Studio Tab Switching
+  const studioTabs = document.querySelectorAll('.studio-tab');
+  const studioPanels = document.querySelectorAll('.studio-panel');
+
+  studioTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const tabTarget = tab.getAttribute('data-studio-tab');
+
+      studioTabs.forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
+      });
+      studioPanels.forEach(p => p.classList.remove('active'));
+
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+
+      if (tabTarget === 'menu') {
+        const p = document.getElementById('studioPanelMenu');
+        if (p) p.classList.add('active');
+        renderStudioMenu();
+      } else if (tabTarget === 'photos') {
+        const p = document.getElementById('studioPanelPhotos');
+        if (p) p.classList.add('active');
+        renderStudioPhotos();
+      } else if (tabTarget === 'reservations') {
+        const p = document.getElementById('studioPanelReservations');
+        if (p) p.classList.add('active');
+        renderStudioReservations();
+      }
+    });
+  });
+
+  // --- TAB 1: MENU MANAGER INTERACTIONS ---
+  const studioAddMenuForm = document.getElementById('studioAddMenuForm');
+  if (studioAddMenuForm) {
+    studioAddMenuForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nameInput = document.getElementById('newItemName');
+      const priceInput = document.getElementById('newItemPrice');
+      const catInput = document.getElementById('newItemCategory');
+      const stockInput = document.getElementById('newItemInStock');
+
+      const name = nameInput ? nameInput.value.trim() : '';
+      const price = priceInput ? parseInt(priceInput.value, 10) : 0;
+      const category = catInput ? catInput.value : 'coffee';
+      const inStock = stockInput ? stockInput.checked : true;
+
+      if (!name || isNaN(price) || price <= 0) {
+        showToast('Please provide a valid item name and price.');
+        return;
+      }
+
+      const items = getStoredMenuItems();
+      items.push({
+        id: 'm_' + Date.now(),
+        name: name,
+        price: price,
+        category: category,
+        inStock: inStock
+      });
+
+      saveStoredMenuItems(items);
+      renderPublicMenu();
+      renderStudioMenu();
+      studioAddMenuForm.reset();
+      if (stockInput) stockInput.checked = true;
+      showToast(`Added "${name}" (₹${price}) to the live menu!`);
+    });
+  }
+
+  // Menu List Actions: stock toggle, price edit, delete
+  const studioMenuList = document.getElementById('studioMenuList');
+  if (studioMenuList) {
+    studioMenuList.addEventListener('click', (e) => {
+      const actionBtn = e.target.closest('[data-action]');
+      if (!actionBtn) return;
+      const action = actionBtn.getAttribute('data-action');
+      const itemId = actionBtn.getAttribute('data-item-id');
+      const items = getStoredMenuItems();
+      const targetItem = items.find(it => it.id === itemId);
+
+      if (!targetItem) return;
+
+      if (action === 'toggle-stock') {
+        targetItem.inStock = !targetItem.inStock;
+        saveStoredMenuItems(items);
+        renderPublicMenu();
+        renderStudioMenu();
+        showToast(`${targetItem.name} is now marked as ${targetItem.inStock ? 'In Stock' : 'Sold Out'}.`);
+      } else if (action === 'edit-price') {
+        const newPriceStr = prompt(`Update price for "${targetItem.name}" (in ₹):`, targetItem.price);
+        if (newPriceStr !== null) {
+          const newPrice = parseInt(newPriceStr.trim(), 10);
+          if (!isNaN(newPrice) && newPrice > 0) {
+            targetItem.price = newPrice;
+            saveStoredMenuItems(items);
+            renderPublicMenu();
+            renderStudioMenu();
+            showToast(`Updated "${targetItem.name}" price to ₹${newPrice}.`);
+          } else {
+            showToast('Invalid price entered.');
+          }
+        }
+      } else if (action === 'delete-item') {
+        if (confirm(`Remove "${targetItem.name}" from the AMARA menu?`)) {
+          const updated = items.filter(it => it.id !== itemId);
+          saveStoredMenuItems(updated);
+          renderPublicMenu();
+          renderStudioMenu();
+          showToast(`Removed "${targetItem.name}" from menu.`);
+        }
+      }
+    });
+  }
+
+  // --- TAB 2: ATMOSPHERE PHOTOS INTERACTIONS ---
+  let selectedPhotoBase64 = null;
+  const photoFileDropzone = document.getElementById('photoFileDropzone');
+  const newPhotoFile = document.getElementById('newPhotoFile');
+  const photoFilePrompt = document.getElementById('photoFilePrompt');
+
+  if (newPhotoFile) {
+    newPhotoFile.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (file) {
+        if (!file.type.startsWith('image/')) {
+          showToast('Please select a valid image file (JPG, PNG, WebP).');
+          return;
+        }
+        if (photoFilePrompt) photoFilePrompt.textContent = `Selected: ${file.name}`;
+        const reader = new FileReader();
+        reader.onload = (loadEvent) => {
+          selectedPhotoBase64 = loadEvent.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  const photoSourceRadios = document.querySelectorAll('input[name="photoSourceType"]');
+  const photoFileInputGroup = document.getElementById('photoFileInputGroup');
+  const photoUrlInputGroup = document.getElementById('photoUrlInputGroup');
+
+  photoSourceRadios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      if (radio.value === 'file') {
+        if (photoFileInputGroup) photoFileInputGroup.style.display = 'block';
+        if (photoUrlInputGroup) photoUrlInputGroup.style.display = 'none';
+      } else {
+        if (photoFileInputGroup) photoFileInputGroup.style.display = 'none';
+        if (photoUrlInputGroup) photoUrlInputGroup.style.display = 'block';
+      }
+    });
+  });
+
+  const studioAddPhotoForm = document.getElementById('studioAddPhotoForm');
+  if (studioAddPhotoForm) {
+    studioAddPhotoForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const titleInput = document.getElementById('newPhotoTitle');
+      const urlInput = document.getElementById('newPhotoUrl');
+      const title = titleInput ? titleInput.value.trim() : '';
+      const sourceType = document.querySelector('input[name="photoSourceType"]:checked')?.value || 'file';
+
+      let finalUrl = '';
+      if (sourceType === 'file') {
+        if (!selectedPhotoBase64) {
+          showToast('Please choose an image file from your device.');
+          return;
+        }
+        finalUrl = selectedPhotoBase64;
+      } else {
+        finalUrl = urlInput ? urlInput.value.trim() : '';
+        if (!finalUrl) {
+          showToast('Please enter an image URL.');
+          return;
+        }
+      }
+
+      const photos = getStoredGalleryPhotos();
+      photos.push({
+        id: 'photo_' + Date.now(),
+        title: title || 'Atmosphere Space',
+        url: finalUrl
+      });
+      saveStoredGalleryPhotos(photos);
+      renderPublicGallery();
+      renderStudioPhotos();
+
+      studioAddPhotoForm.reset();
+      selectedPhotoBase64 = null;
+      if (photoFilePrompt) photoFilePrompt.textContent = 'Choose or drag an image here';
+      showToast(`Added "${title}" to atmosphere gallery!`);
+    });
+  }
+
+  const studioPhotosGrid = document.getElementById('studioPhotosGrid');
+  if (studioPhotosGrid) {
+    studioPhotosGrid.addEventListener('click', (e) => {
+      const delBtn = e.target.closest('[data-action="delete-photo"]');
+      if (!delBtn) return;
+      const photoId = delBtn.getAttribute('data-photo-id');
+      const photos = getStoredGalleryPhotos();
+      const targetPhoto = photos.find(p => p.id === photoId);
+
+      if (targetPhoto && confirm(`Remove "${targetPhoto.title}" from the atmosphere gallery?`)) {
+        const updated = photos.filter(p => p.id !== photoId);
+        saveStoredGalleryPhotos(updated);
+        renderPublicGallery();
+        renderStudioPhotos();
+        showToast(`Removed "${targetPhoto.title}" from gallery.`);
+      }
+    });
+  }
+
+  // --- TAB 3: RESERVATIONS DESK INTERACTIONS ---
+  const studioResSearch = document.getElementById('studioResSearch');
+  if (studioResSearch) {
+    studioResSearch.addEventListener('input', (e) => {
+      currentResSearch = e.target.value;
+      renderStudioReservations();
+    });
+  }
+
+  const resFilterButtons = document.querySelectorAll('.res-filter-btn');
+  resFilterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      resFilterButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentResFilter = btn.getAttribute('data-res-filter');
+      renderStudioReservations();
+    });
+  });
+
+  const toggleWalkInBtn = document.getElementById('toggleWalkInBtn');
+  const studioWalkInCard = document.getElementById('studioWalkInCard');
+  const closeWalkInBtn = document.getElementById('closeWalkInBtn');
+  const studioWalkInForm = document.getElementById('studioWalkInForm');
+  const walkInDate = document.getElementById('walkInDate');
+
+  if (toggleWalkInBtn && studioWalkInCard) {
+    toggleWalkInBtn.addEventListener('click', () => {
+      const isHidden = studioWalkInCard.style.display === 'none' || !studioWalkInCard.style.display;
+      studioWalkInCard.style.display = isHidden ? 'block' : 'none';
+      if (isHidden && walkInDate) {
+        walkInDate.value = formatDateToISO(new Date());
+      }
+    });
+  }
+
+  if (closeWalkInBtn && studioWalkInCard) {
+    closeWalkInBtn.addEventListener('click', () => {
+      studioWalkInCard.style.display = 'none';
+    });
+  }
+
+  if (studioWalkInForm) {
+    studioWalkInForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('walkInName')?.value.trim();
+      const phone = document.getElementById('walkInPhone')?.value.trim();
+      const dateVal = document.getElementById('walkInDate')?.value;
+      const time = document.getElementById('walkInTime')?.value;
+      const guests = document.getElementById('walkInGuests')?.value;
+      const wants = document.getElementById('walkInWants')?.value.trim();
+
+      const bookingRef = 'WALK-' + Math.floor(1000 + Math.random() * 9000);
+      const newBooking = {
+        id: 'res_' + Date.now(),
+        bookingRef: bookingRef,
+        name: name,
+        phone: phone,
+        date: dateVal,
+        formattedDate: dateVal ? new Date(dateVal + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Today',
+        time: time,
+        guests: guests,
+        specialWants: wants || 'Walk-in guest',
+        status: 'Seated',
+        createdAt: Date.now()
+      };
+
+      addNewReservation(newBooking);
+      studioWalkInForm.reset();
+      if (studioWalkInCard) studioWalkInCard.style.display = 'none';
+      showToast(`Walk-in confirmed & seated: ${name} (#${bookingRef})`);
+    });
+  }
+
+  const studioReservationsList = document.getElementById('studioReservationsList');
+  if (studioReservationsList) {
+    // Change status via dropdown select
+    studioReservationsList.addEventListener('change', (e) => {
+      if (e.target.classList.contains('res-status-select')) {
+        const select = e.target;
+        const resId = select.getAttribute('data-res-id');
+        const newStatus = select.value;
+        const list = getStoredReservations();
+        const booking = list.find(b => b.id === resId);
+
+        if (booking) {
+          booking.status = newStatus;
+          saveStoredReservations(list);
+          select.setAttribute('data-status', newStatus);
+          const row = select.closest('.res-card-row');
+          if (row) {
+            row.className = `res-card-row status-${newStatus.toLowerCase()}`;
+          }
+          renderStudioReservations();
+          showToast(`Booking #${booking.bookingRef} updated to ${newStatus}.`);
+        }
+      }
+    });
+
+    // Delete reservation
+    studioReservationsList.addEventListener('click', (e) => {
+      const delBtn = e.target.closest('[data-action="delete-res"]');
+      if (!delBtn) return;
+      const resId = delBtn.getAttribute('data-res-id');
+      const list = getStoredReservations();
+      const booking = list.find(b => b.id === resId);
+
+      if (booking && confirm(`Delete booking #${booking.bookingRef} (${booking.name})?`)) {
+        const updated = list.filter(b => b.id !== resId);
+        saveStoredReservations(updated);
+        renderStudioReservations();
+        showToast(`Deleted reservation #${booking.bookingRef}.`);
+      }
+    });
+  }
+
+  // Copy Sheet to Clipboard
+  const copyTodaySummaryBtn = document.getElementById('copyTodaySummaryBtn');
+  if (copyTodaySummaryBtn) {
+    copyTodaySummaryBtn.addEventListener('click', () => {
+      const all = getStoredReservations();
+      if (all.length === 0) {
+        showToast('No reservations to copy.');
+        return;
+      }
+      let summaryText = `AMARA BENGALURU — RESERVATION SHEET\nGenerated: ${new Date().toLocaleString()}\n` +
+        `Total Bookings: ${all.length} | Confirmed: ${all.filter(b => b.status === 'Confirmed').length} | Seated: ${all.filter(b => b.status === 'Seated').length}\n` +
+        '----------------------------------------------------\n';
+
+      all.forEach((b, idx) => {
+        summaryText += `${idx + 1}. #${b.bookingRef} | ${b.time} (${b.formattedDate || b.date}) | ${b.guests} Guests | ${b.name} (${b.phone}) | Status: ${b.status}${b.specialWants ? ' | Note: ' + b.specialWants : ''}\n`;
+      });
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(summaryText).then(() => {
+          showToast('Reservation sheet copied to clipboard!');
+        }).catch(() => {
+          showToast('Reservation sheet formatted!');
+        });
+      } else {
+        showToast('Reservation sheet generated!');
+      }
+    });
+  }
+
+  // Reset to Defaults Button
+  if (studioResetDefaultsBtn) {
+    studioResetDefaultsBtn.addEventListener('click', () => {
+      const confirmReset = confirm('Reset all menu items, atmosphere photos, and reservations to original AMARA café defaults?');
+      if (confirmReset) {
+        localStorage.removeItem('amara_menu_items');
+        localStorage.removeItem('amara_gallery_photos');
+        localStorage.removeItem('amara_reservations');
+        renderPublicMenu();
+        renderPublicGallery();
+        renderStudioMenu();
+        renderStudioPhotos();
+        renderStudioReservations();
+        showToast('Restored original AMARA café defaults.');
+      }
+    });
+  }
+
 });
