@@ -94,70 +94,42 @@
     </div>
   </aside>
 
-  <!-- ================= HERO SECTION (INTERACTIVE BREW BAR — NOT A POSTER) ================= -->
-  <section id="hero" class="hero-section brew-bar-hero">
-    <!-- Ambient Atmospheric Living Lighting & Botanical Shadows (NO POSTER) -->
+  <!-- ================= HERO SECTION (INTERACTIVE FLOATING GRAVITY FIELD) ================= -->
+  <section id="hero" class="hero-section gravity-hero">
+    <!-- Zero-Gravity Interactive Canvas Physics Layer -->
+    <canvas id="gravityFieldCanvas" aria-label="Interactive floating coffee beans and amber beads"></canvas>
+
+    <!-- Warm Ambient Atmospheric Lighting -->
     <div class="hero-atmosphere" aria-hidden="true">
       <div class="sunbeam-orb sunbeam-1"></div>
       <div class="sunbeam-orb sunbeam-2"></div>
       <div class="sunbeam-orb sunbeam-3"></div>
-      <div class="botanical-silhouette bot-left"></div>
-      <div class="botanical-silhouette bot-right"></div>
     </div>
 
     <div class="hero-content-wrapper">
       <div class="container hero-container">
         <div class="hero-brand-pill">
           <span class="pulsing-brew-dot"></span>
-          <span>AMARA Slow Bar · Live Extraction</span>
+          <span>AMARA · Coffee Sanctuary & Slow Bakes</span>
         </div>
 
         <h1 class="hero-title">
-          The Art of the <br>
-          <span class="title-italic">Slow Pour</span>
+          A Sanctuary for <br>
+          <span class="title-italic">Unhurried Living</span>
         </h1>
 
         <p class="hero-subtitle">
-          Watch single-estate Arabica extract in real time. Switch between artisanal slow brew styles below.
+          Single-estate Arabica harvested at 1,450m, cold-fermented morning viennoiserie, and sunlit spaces in Indiranagar, Bengaluru.
         </p>
-
-        <!-- Interactive Brew Switcher Pills -->
-        <div class="brew-switcher" role="tablist" aria-label="Brew Method Selector">
-          <button class="brew-tab active" data-brew-mode="espresso" role="tab" aria-selected="true">
-            <i class="fa-solid fa-mug-saucer"></i>
-            <span>Honey Espresso</span>
-          </button>
-          <button class="brew-tab" data-brew-mode="colddrip" role="tab" aria-selected="false">
-            <i class="fa-solid fa-droplet"></i>
-            <span>Slow Cold Drip</span>
-          </button>
-          <button class="brew-tab" data-brew-mode="pourover" role="tab" aria-selected="false">
-            <i class="fa-solid fa-filter"></i>
-            <span>Pour-Over V60</span>
-          </button>
-        </div>
-
-        <!-- Live Extraction Stage & Interactive Brew Canvas -->
-        <div class="brew-stage-wrapper">
-          <div class="brew-spec-badge" id="brewSpecBadge">
-            <span class="spec-state"><i class="fa-solid fa-circle-dot live-indicator"></i> 9 Bar Sinuous Stream</span>
-            <span class="spec-divider">·</span>
-            <span class="spec-estate">Balur Estate Washed Lot</span>
-            <span class="spec-divider">·</span>
-            <span class="spec-notes">Notes: Raw Honey, Sweet Lime & Cacao</span>
-          </div>
-
-          <div class="canvas-pour-container">
-            <canvas id="coffeePourCanvas" width="420" height="280" aria-label="Interactive coffee extraction simulation"></canvas>
-            <div class="canvas-tap-hint">
-              <i class="fa-solid fa-hand-pointer"></i> <span>Tap cup to agitate crema ripples</span>
-            </div>
-          </div>
-        </div>
 
         <div class="hero-cta-group">
           <a href="#menu" class="btn btn-primary hero-btn">Explore Menu</a>
           <a href="#reserve" class="btn btn-outline hero-btn">Reserve a Table</a>
+        </div>
+
+        <div class="gravity-interactive-hint">
+          <i class="fa-solid fa-sparkles"></i>
+          <span>Move cursor or touch screen to swirl the zero-gravity beans</span>
         </div>
       </div>
     </div>

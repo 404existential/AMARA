@@ -529,21 +529,36 @@ button, input, select, textarea {
 }
 
 /* ==========================================================
-   HERO SECTION (INTERACTIVE BREW BAR — NOT A POSTER)
+   HERO SECTION (INTERACTIVE FLOATING GRAVITY FIELD)
    ========================================================== */
-.hero-section.brew-bar-hero {
+.hero-section.gravity-hero {
   position: relative;
-  min-height: 98vh;
+  min-height: 94vh;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding-top: calc(var(--header-height) + 16px);
-  padding-bottom: 40px;
-  background: radial-gradient(circle at 50% 30%, #fbf8f2 0%, #f5efe4 55%, #ede4d3 100%);
+  padding-top: calc(var(--header-height) + 10px);
+  padding-bottom: 30px;
+  background: radial-gradient(circle at 50% 35%, #fdfbf7 0%, #f7f1e6 55%, #ece1cf 100%);
 }
 
-/* Atmospheric Living Lighting & Botanical Shadows (Pure CSS, No Poster) */
+/* Zero-Gravity Interactive Physics Canvas */
+#gravityFieldCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: auto;
+  cursor: grab;
+}
+
+#gravityFieldCanvas:active {
+  cursor: grabbing;
+}
+
+/* Atmospheric Sunbeams */
 .hero-atmosphere {
   position: absolute;
   inset: 0;
@@ -578,9 +593,9 @@ button, input, select, textarea {
 }
 
 .sunbeam-3 {
-  width: 300px;
-  height: 300px;
-  top: 40%;
+  width: 320px;
+  height: 320px;
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
   background: radial-gradient(circle, rgba(255, 248, 235, 0.8) 0%, rgba(248, 245, 239, 0) 65%);
@@ -592,42 +607,11 @@ button, input, select, textarea {
   100% { transform: scale(1.15) translate(15px, 20px); opacity: 0.55; }
 }
 
-.botanical-silhouette {
-  position: absolute;
-  width: 280px;
-  height: 380px;
-  opacity: 0.055;
-  background-size: contain;
-  background-repeat: no-repeat;
-  filter: blur(2px);
-  pointer-events: none;
-  animation: botanicalSway 12s ease-in-out infinite alternate;
-}
-
-.bot-left {
-  left: -40px;
-  top: 20%;
-  background-image: radial-gradient(ellipse at center, #33241b 40%, transparent 70%);
-  transform-origin: bottom left;
-}
-
-.bot-right {
-  right: -50px;
-  bottom: 10%;
-  background-image: radial-gradient(ellipse at center, #33241b 40%, transparent 70%);
-  transform-origin: bottom right;
-  animation-duration: 15s;
-}
-
-@keyframes botanicalSway {
-  0% { transform: rotate(0deg) scale(1); }
-  100% { transform: rotate(3deg) scale(1.04); }
-}
-
 .hero-content-wrapper {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   width: 100%;
+  pointer-events: none;
 }
 
 @keyframes heroContentFadeIn {
@@ -661,12 +645,13 @@ button, input, select, textarea {
   text-transform: uppercase;
   color: var(--accent-terracotta);
   background: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
   border: 1px solid var(--border-medium);
   padding: 6px 18px;
   border-radius: 30px;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
   box-shadow: var(--shadow-sm);
+  pointer-events: auto;
   opacity: 1 !important;
   visibility: visible !important;
 }
@@ -687,177 +672,54 @@ button, input, select, textarea {
 }
 
 .hero-title {
-  font-size: clamp(2.4rem, 4.6vw, 3.8rem);
+  font-size: clamp(2.6rem, 5vw, 4.4rem);
   line-height: 1.1;
   font-weight: 500;
   color: var(--text-main);
-  margin-bottom: 10px;
-  max-width: 820px;
+  margin-bottom: 16px;
+  max-width: 840px;
   opacity: 1 !important;
   visibility: visible !important;
 }
 
 .hero-subtitle {
-  max-width: 580px;
-  font-size: clamp(0.92rem, 1.15vw, 1.05rem);
+  max-width: 600px;
+  font-size: clamp(0.95rem, 1.25vw, 1.12rem);
   color: var(--text-body);
-  margin-bottom: 22px;
-  line-height: 1.55;
+  margin-bottom: 28px;
+  line-height: 1.6;
   opacity: 1 !important;
   visibility: visible !important;
 }
 
-/* ==========================================================
-   INTERACTIVE BREW SWITCHER PILLS
-   ========================================================== */
-.brew-switcher {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(8px);
-  padding: 6px;
-  border-radius: 40px;
-  border: 1px solid var(--border-medium);
-  box-shadow: 0 4px 16px rgba(51, 36, 27, 0.05);
-  margin-bottom: 18px;
-}
-
-.brew-tab {
+.gravity-interactive-hint {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 18px;
-  border-radius: 30px;
-  background: transparent;
-  border: 1px solid transparent;
-  color: var(--text-body);
-  font-size: 0.84rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  cursor: pointer;
+  color: var(--accent-terracotta);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  padding: 8px 20px;
+  border-radius: 30px;
+  margin-top: 28px;
+  box-shadow: 0 4px 16px rgba(51, 36, 27, 0.06);
+  border: 1px solid var(--border-medium);
+  pointer-events: auto;
+  opacity: 0.9;
   transition: all var(--transition-fast);
 }
 
-.brew-tab i {
-  font-size: 0.9rem;
-  color: var(--accent-terracotta);
-  transition: transform var(--transition-fast);
-}
-
-.brew-tab:hover {
-  color: var(--text-main);
-  background: rgba(255, 255, 255, 0.8);
-}
-
-.brew-tab:hover i {
-  transform: scale(1.15);
-}
-
-.brew-tab.active {
-  background: var(--text-main);
-  color: #faf7f2;
-  box-shadow: 0 4px 14px rgba(51, 36, 27, 0.18);
-  border-color: var(--text-main);
-}
-
-.brew-tab.active i {
+.gravity-interactive-hint i {
   color: var(--accent-crema);
+  font-size: 0.82rem;
+  animation: sparkleTwinkle 2s infinite alternate;
 }
 
-/* ==========================================================
-   LIVE EXTRACTION STAGE & CANVAS
-   ========================================================== */
-.brew-stage-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 580px;
-  margin-bottom: 22px;
-}
-
-.brew-spec-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  justify-content: center;
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  background: rgba(255, 255, 255, 0.65);
-  border: 1px solid rgba(214, 204, 190, 0.6);
-  padding: 5px 14px;
-  border-radius: 20px;
-  margin-bottom: 6px;
-  transition: all 0.3s ease;
-}
-
-.brew-spec-badge strong,
-.brew-spec-badge .spec-state {
-  color: var(--accent-coffee);
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.live-indicator {
-  font-size: 0.6rem;
-  color: #2e7d32;
-  animation: liveBlink 1.5s infinite;
-}
-
-@keyframes liveBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
-
-.spec-divider {
-  color: var(--border-medium);
-}
-
-.canvas-pour-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  cursor: pointer;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-#coffeePourCanvas {
-  display: block;
-  width: 420px;
-  height: 280px;
-  max-width: 92vw;
-  filter: drop-shadow(0 12px 28px rgba(51, 36, 27, 0.09));
-  opacity: 1 !important;
-  visibility: visible !important;
-  transition: transform 0.25s ease;
-}
-
-#coffeePourCanvas:active {
-  transform: scale(0.985);
-}
-
-.canvas-tap-hint {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  letter-spacing: 0.04em;
-  margin-top: 4px;
-  opacity: 0.7;
-  transition: opacity var(--transition-fast);
-}
-
-.canvas-pour-container:hover .canvas-tap-hint {
-  opacity: 1;
-  color: var(--accent-terracotta);
+@keyframes sparkleTwinkle {
+  0% { transform: scale(0.9) rotate(0deg); opacity: 0.7; }
+  100% { transform: scale(1.25) rotate(180deg); opacity: 1; }
 }
 
 .hero-cta-group {
