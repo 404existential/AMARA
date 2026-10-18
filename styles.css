@@ -1,6 +1,6 @@
 /* ==========================================================
    AMARA BOTANICAL ROASTERY & CAFÉ — BENGALURU
-   Warm Beige, Cream, Sand, Terracotta & Deep Espresso
+   Warm Beige, Cream, Terracotta & Deep Espresso
    ========================================================== */
 
 /* --- ROOT DESIGN TOKENS --- */
@@ -37,7 +37,7 @@
   --font-serif: 'Cormorant Garamond', Georgia, serif;
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 
-  /* Header & Sizing */
+  /* Sizing */
   --header-height: 80px;
   --container-max: 1140px;
   --transition-fast: 0.2s ease;
@@ -123,7 +123,7 @@ button, input, select, textarea {
 }
 
 .section {
-  padding: 96px 0;
+  padding: 92px 0;
   position: relative;
 }
 
@@ -140,7 +140,7 @@ button, input, select, textarea {
 }
 
 .section-desc {
-  max-width: 540px;
+  max-width: 520px;
   margin: 0 auto 36px;
   font-size: 0.98rem;
   color: var(--text-muted);
@@ -203,7 +203,7 @@ button, input, select, textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.5s ease, visibility 0.5s ease;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
 }
 
 .preloader.fade-out {
@@ -227,27 +227,20 @@ button, input, select, textarea {
   font-weight: 600;
 }
 
-.preloader-sub {
-  font-size: 0.68rem;
-  letter-spacing: 0.22em;
-  color: var(--accent-terracotta);
-  margin-top: 4px;
-}
-
 .preloader-bar {
-  width: 140px;
+  width: 120px;
   height: 2px;
   background: var(--border-medium);
   border-radius: 4px;
   overflow: hidden;
-  margin-top: 18px;
+  margin-top: 14px;
 }
 
 .preloader-progress {
   width: 0%;
   height: 100%;
   background: var(--accent-terracotta);
-  transition: width 0.15s ease;
+  transition: width 0.12s ease;
 }
 
 .scroll-progress-bar {
@@ -262,7 +255,7 @@ button, input, select, textarea {
 }
 
 /* ==========================================================
-   NAVIGATION
+   HEADER & NAVIGATION
    ========================================================== */
 .header {
   position: fixed;
@@ -366,33 +359,6 @@ button, input, select, textarea {
   display: flex;
   align-items: center;
   gap: 14px;
-}
-
-/* Subtle Minimal Location Stamp (Replaces old clunky green badge) */
-.location-stamp {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  letter-spacing: 0.03em;
-  padding: 4px 10px;
-  border: 1px solid var(--border-medium);
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.6);
-  transition: all var(--transition-fast);
-}
-
-.location-stamp:hover {
-  color: var(--text-main);
-  border-color: var(--accent-coffee);
-}
-
-.stamp-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background-color: var(--accent-terracotta);
 }
 
 .btn-nav {
@@ -505,11 +471,11 @@ button, input, select, textarea {
 }
 
 /* ==========================================================
-   HERO SECTION & SCROLL POUR ANIMATION
+   HERO SECTION & CONTINUOUS POUR ANIMATION
    ========================================================== */
 .hero-section {
   position: relative;
-  min-height: 96vh;
+  min-height: 94vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -543,7 +509,7 @@ button, input, select, textarea {
   position: relative;
   z-index: 2;
   width: 100%;
-  padding: 40px 0 50px;
+  padding: 30px 0 40px;
 }
 
 .hero-container {
@@ -558,7 +524,7 @@ button, input, select, textarea {
   line-height: 1.12;
   font-weight: 500;
   color: var(--text-main);
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   max-width: 820px;
 }
 
@@ -566,7 +532,7 @@ button, input, select, textarea {
   max-width: 560px;
   font-size: clamp(0.95rem, 1.2vw, 1.12rem);
   color: var(--text-body);
-  margin-bottom: 30px;
+  margin-bottom: 26px;
   line-height: 1.6;
 }
 
@@ -576,7 +542,7 @@ button, input, select, textarea {
   gap: 14px;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 38px;
+  margin-bottom: 34px;
 }
 
 .hero-btn {
@@ -585,54 +551,54 @@ button, input, select, textarea {
 }
 
 /* ==========================================================
-   INTERACTIVE SCROLL-POUR COMPONENT
+   CONTINUOUS COFFEE POUR ANIMATION (LARGER & SEAMLESS)
    ========================================================== */
-.scroll-pour-interactive {
+.continuous-pour-box {
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-  margin-top: 10px;
-  cursor: pointer;
-  user-select: none;
+  margin-top: 6px;
 }
 
 .pour-spout {
-  width: 20px;
-  height: 12px;
-  position: relative;
   display: flex;
   justify-content: center;
 }
 
-.kettle-nozzle {
-  width: 12px;
-  height: 8px;
-  background: linear-gradient(180deg, #5c4a3d, #2b1f17);
+.kettle-tip {
+  width: 16px;
+  height: 10px;
+  background: linear-gradient(180deg, #4d3a2c, #2b1f17);
   border-radius: 4px 4px 1px 1px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
-.pour-stream-wrap {
-  width: 12px;
-  height: 54px;
+.pour-stream-track {
+  width: 14px;
+  height: 64px;
   display: flex;
   justify-content: center;
-  overflow: hidden;
   position: relative;
+  overflow: hidden;
 }
 
-.pour-stream {
-  width: 3.5px;
-  height: 0%;
-  background: linear-gradient(180deg, #442616 0%, #7d4422 60%, #b85e35 100%);
+.flowing-stream {
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #3d2112 0%, #7d4422 50%, #b85e35 100%);
   border-radius: 2px;
-  box-shadow: 0 0 6px rgba(184, 94, 53, 0.4);
-  transition: height 0.1s linear, opacity 0.2s ease;
-  opacity: 0.95;
+  box-shadow: 0 0 8px rgba(184, 94, 53, 0.45);
+  animation: liquidFlowShimmer 1.2s infinite linear;
 }
 
-.pour-cup-container {
+@keyframes liquidFlowShimmer {
+  0% { transform: scaleY(1); opacity: 0.95; }
+  50% { transform: scaleY(1.02); opacity: 1; }
+  100% { transform: scaleY(1); opacity: 0.95; }
+}
+
+.pour-cup-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -640,116 +606,330 @@ button, input, select, textarea {
   margin-top: -2px;
 }
 
-.pour-cup {
-  width: 68px;
-  height: 48px;
+.ceramic-cup {
+  width: 82px;
+  height: 56px;
   background: #fdfbf7;
-  border: 2px solid var(--border-medium);
+  border: 2.2px solid var(--border-medium);
   border-top: none;
-  border-radius: 0 0 24px 24px;
+  border-radius: 0 0 28px 28px;
   position: relative;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(51, 36, 27, 0.08);
+  overflow: visible;
+  box-shadow: 0 6px 16px rgba(51, 36, 27, 0.1);
 }
 
-.cup-rim {
+.cup-liquid-surface {
+  position: absolute;
+  inset: 0;
+  border-radius: 0 0 26px 26px;
+  background: linear-gradient(180deg, #783d1c 0%, #442415 100%);
+  overflow: hidden;
+}
+
+.crema-foam-ripple {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
-  background: #ece4d8;
-  border-bottom: 1px solid var(--border-medium);
-  z-index: 3;
+  height: 8px;
+  background: linear-gradient(180deg, #dca86b, #b8733b);
+  border-radius: 4px;
+  animation: cremaUndulate 2.4s infinite ease-in-out;
 }
 
-.cup-liquid {
+@keyframes cremaUndulate {
+  0%, 100% { transform: scaleX(1); opacity: 0.9; }
+  50% { transform: scaleX(1.04); opacity: 1; }
+}
+
+.cup-handle-arc {
   position: absolute;
-  bottom: 0;
+  right: -16px;
+  top: 10px;
+  width: 17px;
+  height: 26px;
+  border: 2.5px solid var(--border-medium);
+  border-left: none;
+  border-radius: 0 12px 14px 0;
+}
+
+.ceramic-saucer {
+  width: 108px;
+  height: 7px;
+  background: #fbf9f5;
+  border: 1.8px solid var(--border-medium);
+  border-radius: 8px;
+  margin-top: 3px;
+  box-shadow: 0 2px 6px rgba(51, 36, 27, 0.08);
+}
+
+/* Rising Steam Lines */
+.cup-steam-lines {
+  position: absolute;
+  top: -24px;
   left: 0;
   right: 0;
-  height: 8%; /* Starts at minimal, fills up to 88% on scroll */
-  background: linear-gradient(180deg, #7d4320 0%, #442415 100%);
-  transition: height 0.1s linear;
   display: flex;
   justify-content: center;
+  gap: 8px;
+  pointer-events: none;
 }
 
-.crema-foam {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 6px;
-  background: linear-gradient(180deg, #dca86b, #b8733b);
-  border-radius: 3px;
-  opacity: 0.9;
+.steam-line {
+  width: 2px;
+  height: 18px;
+  background: linear-gradient(180deg, rgba(184, 94, 53, 0.6), transparent);
+  border-radius: 2px;
+  animation: riseSteam 2.2s infinite ease-in-out;
 }
 
-.cup-handle {
-  position: absolute;
-  right: -13px;
-  top: 10px;
-  width: 14px;
-  height: 22px;
-  border: 2px solid var(--border-medium);
-  border-left: none;
-  border-radius: 0 10px 12px 0;
-}
+.steam-line.s2 { animation-delay: 0.5s; }
+.steam-line.s3 { animation-delay: 1s; }
 
-.cup-saucer {
-  width: 90px;
-  height: 6px;
-  background: #fbf9f5;
-  border: 1.5px solid var(--border-medium);
-  border-radius: 6px;
-  margin-top: 2px;
-  box-shadow: 0 2px 6px rgba(51, 36, 27, 0.06);
-}
-
-.pour-hint {
-  margin-top: 14px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.72rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  transition: color var(--transition-fast);
-}
-
-.pour-hint i {
-  color: var(--accent-terracotta);
-  font-size: 0.8rem;
-  animation: bounceDown 1.8s infinite ease-in-out;
-}
-
-@keyframes bounceDown {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(5px); }
+@keyframes riseSteam {
+  0% { transform: translateY(4px) scaleY(0.7); opacity: 0; }
+  50% { opacity: 0.7; }
+  100% { transform: translateY(-14px) scaleY(1.2); opacity: 0; }
 }
 
 /* ==========================================================
-   OUR STORY (HUMAN, REAL CAFÉ PERSPECTIVE)
+   MENU SECTION (CLEAN, MINIMAL & FAST TO SCAN)
    ========================================================== */
-.story-section {
+.menu-section {
   background-color: var(--bg-body);
   border-top: 1px solid var(--border-light);
   border-bottom: 1px solid var(--border-light);
 }
 
+.minimal-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 36px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.menu-clean-col {
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: 8px;
+  padding: 28px 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.menu-col-title {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1.5px solid var(--border-medium);
+  text-align: center;
+}
+
+.menu-clean-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.clean-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px dashed rgba(214, 204, 190, 0.5);
+}
+
+.clean-item:last-child {
+  border-bottom: none;
+}
+
+.clean-item .item-name {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-body);
+}
+
+.clean-item .item-price {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--accent-coffee);
+}
+
+.menu-minimal-note {
+  margin-top: 32px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================
+   THE SPACE (ATMOSPHERE & LIGHT - SPACES ONLY, NO DESC)
+   ========================================================== */
+.spaces-section {
+  background-color: var(--bg-sand-subtle);
+}
+
+.atmosphere-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.atmosphere-photo-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-base);
+}
+
+.atmosphere-photo-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.atmosphere-photo-card img {
+  width: 100%;
+  height: 290px;
+  object-fit: cover;
+}
+
+.atmosphere-title {
+  padding: 16px 20px;
+  font-size: 1.15rem;
+  font-family: var(--font-serif);
+  font-weight: 600;
+  color: var(--text-main);
+  text-align: center;
+}
+
+/* ==========================================================
+   RESERVATIONS (WITH SPECIAL WANTS)
+   ========================================================== */
+.reserve-section {
+  background-color: var(--bg-body);
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.reservation-card-simple {
+  max-width: 640px;
+  margin: 0 auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: 8px;
+  padding: 38px 42px;
+  box-shadow: var(--shadow-md);
+}
+
+.res-top-header {
+  margin-bottom: 24px;
+}
+
+.simple-reserve-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.res-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.res-label {
+  font-size: 0.76rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-body);
+}
+
+.guest-selector-pills {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.g-pill {
+  cursor: pointer;
+}
+
+.g-pill input {
+  display: none;
+}
+
+.g-pill span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  border: 1px solid var(--border-medium);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-body);
+  background: var(--bg-body);
+  transition: all var(--transition-fast);
+}
+
+.g-pill input:checked + span {
+  background: var(--accent-coffee);
+  color: #fff;
+  border-color: var(--accent-coffee);
+}
+
+.res-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.res-input {
+  width: 100%;
+  background: var(--bg-body);
+  border: 1px solid var(--border-medium);
+  border-radius: 6px;
+  padding: 11px 14px;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  transition: border-color var(--transition-fast);
+}
+
+.res-input:focus {
+  border-color: var(--accent-coffee);
+  background: #fff;
+}
+
+.res-confirm-btn {
+  padding: 14px;
+  font-size: 0.92rem;
+  margin-top: 6px;
+}
+
+/* ==========================================================
+   OUR STORY (KEPT AT LAST, BEFORE FOOTER)
+   ========================================================== */
+.story-section {
+  background-color: var(--bg-sand-subtle);
+}
+
 .story-human-layout {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
-  gap: 64px;
+  gap: 60px;
   align-items: center;
 }
 
 .story-heading {
-  font-size: clamp(2rem, 3.2vw, 2.8rem);
+  font-size: clamp(2rem, 3.2vw, 2.7rem);
   line-height: 1.2;
-  margin-bottom: 22px;
+  margin-bottom: 20px;
   font-weight: 500;
 }
 
@@ -761,8 +941,8 @@ button, input, select, textarea {
 }
 
 .founder-note {
-  margin-top: 30px;
-  padding-top: 20px;
+  margin-top: 26px;
+  padding-top: 18px;
   border-top: 1px solid var(--border-medium);
   display: flex;
   flex-direction: column;
@@ -798,379 +978,6 @@ button, input, select, textarea {
   object-fit: cover;
 }
 
-.photo-minimal-tag {
-  padding: 12px 16px;
-  background: var(--bg-card);
-  font-size: 0.78rem;
-  color: var(--text-muted);
-  border-top: 1px solid var(--border-light);
-  text-align: right;
-  font-style: italic;
-}
-
-/* ==========================================================
-   THE MENU (CHIC PHYSICAL CAFÉ BOARD STYLE)
-   ========================================================== */
-.menu-section {
-  background-color: var(--bg-sand-subtle);
-}
-
-.menu-pills-nav {
-  display: inline-flex;
-  gap: 8px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-medium);
-  padding: 5px;
-  border-radius: 30px;
-  box-shadow: var(--shadow-sm);
-  margin-bottom: 40px;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.menu-pill-btn {
-  padding: 8px 18px;
-  border-radius: 30px;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.menu-pill-btn:hover {
-  color: var(--text-main);
-}
-
-.menu-pill-btn.active {
-  background: var(--accent-coffee);
-  color: #fff;
-}
-
-/* Chic Menu Board Cards */
-.menu-board-wrapper {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  max-width: 980px;
-  margin: 0 auto;
-}
-
-.menu-board-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-medium);
-  border-radius: 8px;
-  padding: 22px 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  box-shadow: var(--shadow-sm);
-  transition: border-color var(--transition-fast), transform var(--transition-fast);
-}
-
-.menu-board-card:hover {
-  border-color: var(--accent-terracotta);
-  transform: translateY(-2px);
-}
-
-.menu-card-main {
-  flex-grow: 1;
-  padding-right: 18px;
-}
-
-.menu-card-title-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-
-.menu-item-heading {
-  font-family: var(--font-serif);
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-main);
-}
-
-.menu-chip-badge {
-  font-family: var(--font-sans);
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--accent-terracotta);
-  background: var(--bg-sand);
-  padding: 2px 8px;
-  border-radius: 4px;
-}
-
-.menu-card-desc {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  line-height: 1.45;
-}
-
-.menu-card-price {
-  font-family: var(--font-serif);
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--accent-coffee);
-  white-space: nowrap;
-}
-
-.menu-bottom-note {
-  margin-top: 36px;
-  font-size: 0.84rem;
-  color: var(--text-muted);
-}
-
-/* ==========================================================
-   THE SPACE (ARCHITECTURAL REDESIGN)
-   ========================================================== */
-.spaces-section {
-  background-color: var(--bg-body);
-}
-
-.spaces-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 30px;
-  margin-bottom: 44px;
-  flex-wrap: wrap;
-}
-
-.spaces-header-sub {
-  max-width: 440px;
-  font-size: 0.95rem;
-  color: var(--text-muted);
-  line-height: 1.6;
-}
-
-.spaces-architectural-grid {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
-  gap: 24px;
-}
-
-.space-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-medium);
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  transition: transform var(--transition-base), box-shadow var(--transition-base);
-}
-
-.space-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
-}
-
-.space-img-wrap {
-  width: 100%;
-  height: 280px;
-  overflow: hidden;
-}
-
-.space-img-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.space-card:hover .space-img-wrap img {
-  transform: scale(1.04);
-}
-
-.space-info {
-  padding: 22px;
-  display: flex;
-  flex-direction: column;
-}
-
-.space-index {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  color: var(--accent-terracotta);
-  margin-bottom: 4px;
-}
-
-.space-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-main);
-  margin-bottom: 6px;
-}
-
-.space-desc {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  line-height: 1.5;
-}
-
-/* ==========================================================
-   CONCIERGE TABLE RESERVATIONS
-   ========================================================== */
-.reserve-section {
-  background-color: var(--bg-sand-subtle);
-  border-top: 1px solid var(--border-light);
-}
-
-.concierge-booking-card {
-  max-width: 700px;
-  margin: 0 auto;
-  background: var(--bg-card);
-  border: 1px solid var(--border-medium);
-  border-radius: 10px;
-  padding: 44px 48px;
-  box-shadow: var(--shadow-md);
-}
-
-.concierge-top {
-  margin-bottom: 30px;
-  text-align: center;
-}
-
-.concierge-badge {
-  display: inline-block;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--accent-terracotta);
-  margin-bottom: 10px;
-}
-
-.concierge-title {
-  font-size: 2.2rem;
-  font-weight: 500;
-  color: var(--text-main);
-  margin-bottom: 8px;
-}
-
-.concierge-desc {
-  font-size: 0.92rem;
-  color: var(--text-muted);
-}
-
-.concierge-form {
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-}
-
-.booking-step {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.step-label {
-  font-size: 0.78rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-body);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.step-num {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--bg-sand);
-  color: var(--accent-coffee);
-  font-size: 0.7rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-}
-
-/* Guest Pills */
-.guest-pill-group {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-}
-
-.guest-pill {
-  cursor: pointer;
-}
-
-.guest-pill input {
-  display: none;
-}
-
-.guest-pill span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 4px;
-  border: 1px solid var(--border-medium);
-  border-radius: 6px;
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: var(--text-body);
-  background: var(--bg-card);
-  transition: all var(--transition-fast);
-}
-
-.guest-pill input:checked + span {
-  background: var(--accent-coffee);
-  color: #fff;
-  border-color: var(--accent-coffee);
-}
-
-/* Date Time Row */
-.date-time-row {
-  display: grid;
-  grid-template-columns: 1.1fr 1.2fr 1.2fr;
-  gap: 10px;
-}
-
-.field-wrap input, .field-wrap select, .concierge-input {
-  width: 100%;
-  background: var(--bg-body);
-  border: 1px solid var(--border-medium);
-  border-radius: 6px;
-  padding: 12px 14px;
-  font-size: 0.9rem;
-  color: var(--text-main);
-  transition: border-color var(--transition-fast);
-}
-
-.field-wrap input:focus, .field-wrap select:focus, .concierge-input:focus {
-  border-color: var(--accent-coffee);
-  background: #fff;
-}
-
-/* Contact Inputs */
-.contact-inputs-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.concierge-submit-btn {
-  padding: 15px;
-  font-size: 0.92rem;
-  margin-top: 6px;
-}
-
-.booking-reassurance {
-  text-align: center;
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
-
 /* ==========================================================
    CONFIRMATION MODAL
    ========================================================== */
@@ -1201,7 +1008,7 @@ button, input, select, textarea {
   border-radius: 8px;
   width: 100%;
   max-width: 440px;
-  padding: 34px;
+  padding: 32px;
   box-shadow: var(--shadow-lg);
   text-align: center;
 }
@@ -1407,30 +1214,36 @@ button, input, select, textarea {
 .delay-3 { transition-delay: 0.32s; }
 
 /* ==========================================================
-   RESPONSIVE DESIGN (MOBILE & TABLET)
+   RESPONSIVE (MOBILE & TABLET)
    ========================================================== */
 @media (max-width: 960px) {
+  .minimal-menu-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .atmosphere-gallery-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .atmosphere-photo-card img {
+    height: 240px;
+  }
+
   .story-human-layout {
     grid-template-columns: 1fr;
     gap: 36px;
   }
 
   .story-photo-col {
-    max-width: 480px;
+    max-width: 440px;
     margin: 0 auto;
     width: 100%;
   }
 
   .aesthetic-img {
-    height: 320px;
-  }
-
-  .menu-board-wrapper {
-    grid-template-columns: 1fr;
-  }
-
-  .spaces-architectural-grid {
-    grid-template-columns: 1fr;
+    height: 300px;
   }
 
   .footer-layout {
@@ -1452,28 +1265,20 @@ button, input, select, textarea {
   }
 
   .section {
-    padding: 70px 0;
+    padding: 68px 0;
   }
 
-  .guest-pill-group {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .date-time-row {
+  .res-row-2 {
     grid-template-columns: 1fr;
   }
 
-  .contact-inputs-row {
-    grid-template-columns: 1fr;
-  }
-
-  .concierge-booking-card {
-    padding: 30px 22px;
+  .reservation-card-simple {
+    padding: 28px 20px;
   }
 
   .footer-layout {
     grid-template-columns: 1fr;
-    gap: 28px;
+    gap: 26px;
   }
 }
 
@@ -1483,7 +1288,7 @@ button, input, select, textarea {
   }
 
   .hero-section {
-    min-height: 86vh;
+    min-height: 84vh;
   }
 
   .hero-title {
@@ -1500,21 +1305,8 @@ button, input, select, textarea {
     width: 100%;
   }
 
-  .aesthetic-img {
-    height: 240px;
-  }
-
-  .space-img-wrap {
-    height: 220px;
-  }
-
-  .concierge-booking-card {
-    padding: 24px 16px;
-    border-radius: 6px;
-  }
-
-  .guest-pill-group {
-    grid-template-columns: repeat(2, 1fr);
+  .guest-selector-pills {
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .modal-card {

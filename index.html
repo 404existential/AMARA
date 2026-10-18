@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AMARA Botanical Roastery & Café — Single-origin coffee, morning viennoiserie, and calm sunlit spaces on 12th Main, Indiranagar, Bengaluru.">
-  <title>AMARA | Roastery & Café — Indiranagar, Bengaluru</title>
+  <meta name="description" content="AMARA Botanical Roastery & Café — Single-origin coffee, morning viennoiserie, and serene sunlit spaces in Indiranagar, Bengaluru.">
+  <title>AMARA | Roastery & Café — Bengaluru</title>
 
   <!-- Google Fonts: Cormorant Garamond & Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,7 +22,6 @@
   <div id="preloader" class="preloader">
     <div class="preloader-content">
       <div class="preloader-monogram">AMARA</div>
-      <div class="preloader-sub">12TH MAIN · INDIRANAGAR</div>
       <div class="preloader-bar">
         <div class="preloader-progress" id="preloaderProgress"></div>
       </div>
@@ -42,19 +41,13 @@
 
       <ul class="nav-links" id="navLinks">
         <li><a href="#hero" class="nav-link active">Home</a></li>
-        <li><a href="#story" class="nav-link">Story</a></li>
         <li><a href="#menu" class="nav-link">Menu</a></li>
         <li><a href="#spaces" class="nav-link">The Space</a></li>
         <li><a href="#reserve" class="nav-link">Reservations</a></li>
+        <li><a href="#story" class="nav-link">Our Story</a></li>
       </ul>
 
       <div class="nav-actions">
-        <!-- Clean minimal location label (replaces the old bulky green pill) -->
-        <a href="#spaces" class="location-stamp">
-          <span class="stamp-dot"></span>
-          <span class="stamp-text">12th Main, Indiranagar</span>
-        </a>
-
         <a href="#reserve" class="btn btn-primary btn-nav">
           <span>Book a Table</span>
         </a>
@@ -77,24 +70,24 @@
     </div>
     <ul class="drawer-links">
       <li><a href="#hero" class="drawer-link">Home</a></li>
-      <li><a href="#story" class="drawer-link">Our Story</a></li>
       <li><a href="#menu" class="drawer-link">Menu</a></li>
       <li><a href="#spaces" class="drawer-link">The Space</a></li>
-      <li><a href="#reserve" class="drawer-link">Book a Table</a></li>
+      <li><a href="#reserve" class="drawer-link">Reservations</a></li>
+      <li><a href="#story" class="drawer-link">Our Story</a></li>
     </ul>
     <div class="drawer-footer">
-      <a href="#reserve" class="btn btn-primary btn-block" id="drawerReserveBtn">Reserve a Table</a>
+      <a href="#reserve" class="btn btn-primary btn-block" id="drawerReserveBtn">Book a Table</a>
       <div class="drawer-meta">
-        <p><i class="fa-solid fa-location-dot"></i> 12th Main Road, Indiranagar, Bengaluru</p>
+        <p><i class="fa-solid fa-location-dot"></i> Indiranagar, Bengaluru</p>
         <p><i class="fa-solid fa-clock"></i> 7:30 AM – 10:30 PM Daily</p>
       </div>
     </div>
   </aside>
 
-  <!-- ================= HERO SECTION WITH SCROLL-POUR ANIMATION ================= -->
+  <!-- ================= HERO SECTION WITH CONTINUOUS POUR ================= -->
   <section id="hero" class="hero-section">
     <div class="hero-bg-container">
-      <img src="assets/images/cafe-interior.jpg" alt="Sunlit café interior" class="hero-bg-image">
+      <img src="assets/images/cafe-interior.jpg" alt="Café interior" class="hero-bg-image">
       <div class="hero-overlay"></div>
     </div>
 
@@ -106,7 +99,7 @@
         </h1>
 
         <p class="hero-subtitle reveal-fade delay-1">
-          Hand-roasted hill coffees, warm morning croissants, and tranquil botanical courtyards.
+          Hand-roasted hill coffees, warm morning croissants, and tranquil spaces in Bengaluru.
         </p>
 
         <div class="hero-cta-group reveal-fade delay-2">
@@ -114,39 +107,244 @@
           <a href="#reserve" class="btn btn-outline hero-btn">Reserve a Table</a>
         </div>
 
-        <!-- Interactive Scroll Pouring Feature -->
-        <div class="scroll-pour-interactive reveal-fade delay-3" id="pourInteractiveBox">
+        <!-- Continuous Coffee Pour Feature (Larger & Seamless) -->
+        <div class="continuous-pour-box reveal-fade delay-3">
           <div class="pour-spout">
-            <div class="kettle-nozzle"></div>
+            <div class="kettle-tip"></div>
           </div>
-          <div class="pour-stream-wrap">
-            <div class="pour-stream" id="pourStream"></div>
+          <div class="pour-stream-track">
+            <div class="flowing-stream"></div>
           </div>
-          <div class="pour-cup-container">
-            <div class="pour-cup" id="pourCup">
-              <div class="cup-rim"></div>
-              <div class="cup-liquid" id="cupLiquid">
-                <div class="crema-foam" id="cremaFoam"></div>
+          <div class="pour-cup-wrap">
+            <div class="ceramic-cup">
+              <div class="cup-steam-lines">
+                <span class="steam-line s1"></span>
+                <span class="steam-line s2"></span>
+                <span class="steam-line s3"></span>
               </div>
-              <div class="cup-handle"></div>
+              <div class="cup-liquid-surface">
+                <div class="crema-foam-ripple"></div>
+              </div>
+              <div class="cup-handle-arc"></div>
             </div>
-            <div class="cup-saucer"></div>
-          </div>
-          <div class="pour-hint" id="pourHint">
-            <i class="fa-solid fa-arrow-down-long"></i>
-            <span id="pourStatusText">Scroll down to pour</span>
+            <div class="ceramic-saucer"></div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ================= OUR STORY (NON-AI, HUMAN, CLEAN PERSPECTIVE) ================= -->
+  <!-- ================= MENU SECTION (CLEAN, MINIMAL & FAST TO SCAN) ================= -->
+  <section id="menu" class="section menu-section">
+    <div class="container">
+      <div class="section-header text-center reveal-fade">
+        <span class="editorial-label">CURATED MENU</span>
+        <h2 class="section-title">The Daily Selections</h2>
+      </div>
+
+      <!-- Clean 3-Column Minimal Menu -->
+      <div class="minimal-menu-grid reveal-fade delay-1">
+        <!-- Column 1: Espresso & Brews -->
+        <div class="menu-clean-col">
+          <h3 class="menu-col-title">Coffee</h3>
+          <div class="menu-clean-list">
+            <div class="clean-item">
+              <span class="item-name">Flat White</span>
+              <span class="item-price">₹260</span>
+            </div>
+            <div class="clean-item">
+              <span class="item-name">Cardamom Cortado</span>
+              <span class="item-price">₹280</span>
+            </div>
+            <div class="clean-item">
+              <span class="item-name">Cappuccino</span>
+              <span class="item-price">₹250</span>
+            </div>
+            <div class="clean-item">
+              <span class="item-name">Balur Estate V60</span>
+              <span class="item-price">₹320</span>
+            </div>
+            <div class="clean-item">
+              <span class="item-name">24h Cold Drip</span>
+              <span class="item-price">₹330</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 2: Bakery & Hearth -->
+        <div class="menu-clean-col">
+          <h3 class="menu-col-title">Bakes & Food</h3>
+          <div class="menu-clean-list">
+            <div class="clean-item">
+              <span class="item-name">Butter Croissant</span>
+              <span class="item-price">₹240</span>
+            </div>
+            <div class="clean-item">
+              <span class="item-name">Almond Frangipane</span>
+              <span class="item-price">₹320</span>
+            </div>
+            <div class="clean-item">
+              <span class="item-name">Chocolate Babka</span>
+              <span class="item-price">₹280</span>
+            </div>
+            <div class="clean-item">
+              <span class="item-name">Truffle Egg Brioche</span>
+              <span class="item-price">₹440</span>
+            </div>
+            <div class="clean-item">
+              <span class="item-name">Ricotta & Fig Toast</span>
+              <span class="item-price">₹390</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 3: Cold & Botanicals -->
+        <div class="menu-clean-col">
+          <h3 class="menu-col-title">Cold & Teas</h3>
+          <div class="menu-clean-list">
+            <div class="clean-item">
+              <span class="item-name">Espresso Tonic</span>
+              <span class="item-price">₹320</span>
+            </div>
+            <div class="clean-item">
+              <span class="item-name">Iced Uji Matcha</span>
+              <span class="item-price">₹360</span>
+            </div>
+            <div class="clean-item">
+              <span class="item-name">Cascara Spritz</span>
+              <span class="item-price">₹290</span>
+            </div>
+            <div class="clean-item">
+              <span class="item-name">Silver Needle White Tea</span>
+              <span class="item-price">₹280</span>
+            </div>
+            <div class="clean-item">
+              <span class="item-name">Iced Oat Latte</span>
+              <span class="item-price">₹310</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-minimal-note text-center">
+        <span>Oat and almond milk available. All taxes included.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= THE SPACE (ATMOSPHERE & LIGHT - ATMOSPHERE ONLY, NO DESC) ================= -->
+  <section id="spaces" class="section spaces-section">
+    <div class="container">
+      <div class="section-header text-center reveal-fade">
+        <span class="editorial-label">SPATIAL SENSES</span>
+        <h2 class="section-title">Atmosphere & Light</h2>
+      </div>
+
+      <!-- Atmosphere Only: Architecture, Interiors & Courtyard without food or descriptions -->
+      <div class="atmosphere-gallery-grid reveal-fade delay-1">
+        <div class="atmosphere-photo-card">
+          <img src="assets/images/cafe-interior.jpg" alt="The Courtyard Atrium" loading="lazy">
+          <h4 class="atmosphere-title">The Courtyard</h4>
+        </div>
+        <div class="atmosphere-photo-card">
+          <img src="assets/images/space-bar.jpg" alt="The Coffee Bar" loading="lazy">
+          <h4 class="atmosphere-title">The Coffee Bar</h4>
+        </div>
+        <div class="atmosphere-photo-card">
+          <img src="assets/images/space-lounge.jpg" alt="The Reading Lounge" loading="lazy">
+          <h4 class="atmosphere-title">The Reading Lounge</h4>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TABLE RESERVATIONS (WITH SPECIAL WANTS) ================= -->
+  <section id="reserve" class="section reserve-section">
+    <div class="container">
+      <div class="reservation-card-simple reveal-fade">
+        <div class="res-top-header text-center">
+          <span class="editorial-label">TABLE DESK</span>
+          <h2 class="section-title">Book a Table</h2>
+        </div>
+
+        <form id="simpleReserveForm" class="simple-reserve-form">
+          <!-- Guests Row -->
+          <div class="res-group">
+            <label class="res-label">Party Size</label>
+            <div class="guest-selector-pills">
+              <label class="g-pill">
+                <input type="radio" name="resGuests" value="1">
+                <span>1</span>
+              </label>
+              <label class="g-pill">
+                <input type="radio" name="resGuests" value="2" checked>
+                <span>2</span>
+              </label>
+              <label class="g-pill">
+                <input type="radio" name="resGuests" value="3">
+                <span>3</span>
+              </label>
+              <label class="g-pill">
+                <input type="radio" name="resGuests" value="4">
+                <span>4</span>
+              </label>
+              <label class="g-pill">
+                <input type="radio" name="resGuests" value="6+">
+                <span>6+</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Date & Time Row -->
+          <div class="res-row-2">
+            <div class="res-group">
+              <label class="res-label" for="resDate">Date</label>
+              <input type="date" id="resDate" required class="res-input">
+            </div>
+            <div class="res-group">
+              <label class="res-label" for="resTime">Preferred Time</label>
+              <select id="resTime" required class="res-input">
+                <option value="08:30 AM">08:30 AM</option>
+                <option value="11:00 AM" selected>11:00 AM</option>
+                <option value="01:30 PM">01:30 PM</option>
+                <option value="04:30 PM">04:30 PM</option>
+                <option value="07:00 PM">07:00 PM</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Name & Phone -->
+          <div class="res-row-2">
+            <div class="res-group">
+              <label class="res-label" for="resName">Your Name</label>
+              <input type="text" id="resName" placeholder="Full name" required class="res-input">
+            </div>
+            <div class="res-group">
+              <label class="res-label" for="resPhone">Phone / WhatsApp</label>
+              <input type="tel" id="resPhone" placeholder="+91 ..." required class="res-input">
+            </div>
+          </div>
+
+          <!-- Special Wants / Requests (Replaces sunlit part) -->
+          <div class="res-group">
+            <label class="res-label" for="resSpecialWants">Special Wants / Requests</label>
+            <input type="text" id="resSpecialWants" placeholder="Window table, quiet spot for reading, anniversary, high chair..." class="res-input">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block res-confirm-btn">
+            <span>Confirm Reservation</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= OUR STORY (KEPT AT LAST, JUST BEFORE FOOTER) ================= -->
   <section id="story" class="section story-section">
     <div class="container">
       <div class="story-human-layout">
         <div class="story-copy-col reveal-left">
-          <span class="editorial-label">NOTES FROM 12TH MAIN</span>
+          <span class="editorial-label">OUR STORY</span>
           <h2 class="story-heading">
             A quiet room with the doors left open to the morning breeze.
           </h2>
@@ -171,179 +369,9 @@
 
         <div class="story-photo-col reveal-right">
           <div class="aesthetic-photo-card">
-            <img src="assets/images/coffee-cup.jpg" alt="Specialty cappuccino at Amara" class="aesthetic-img">
-            <div class="photo-minimal-tag">
-              <span>08:15 AM · First Extraction of the Day</span>
-            </div>
+            <img src="assets/images/coffee-cup.jpg" alt="AMARA Specialty Coffee" class="aesthetic-img">
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= THE MENU (CHIC PHYSICAL CAFÉ BOARD STYLE) ================= -->
-  <section id="menu" class="section menu-section">
-    <div class="container">
-      <div class="section-header text-center reveal-fade">
-        <span class="editorial-label">DAILY TASTING SELECTIONS</span>
-        <h2 class="section-title">The Coffee & Bakehouse Board</h2>
-        <p class="section-desc">
-          Single-estate coffees, hand-laminated morning bakes, and house botanicals.
-        </p>
-
-        <!-- Minimalist Pill Tabs -->
-        <div class="menu-pills-nav" id="menuFilterNav">
-          <button class="menu-pill-btn active" data-filter="all">Full Board</button>
-          <button class="menu-pill-btn" data-filter="coffee">Black & White Coffee</button>
-          <button class="menu-pill-btn" data-filter="pourover">Manual Estate Brews</button>
-          <button class="menu-pill-btn" data-filter="bakehouse">Bakehouse & Brunch</button>
-          <button class="menu-pill-btn" data-filter="cold">Chilled & Teas</button>
-        </div>
-      </div>
-
-      <!-- Menu Board Grid -->
-      <div class="menu-board-wrapper" id="menuBoardWrapper">
-        <!-- Rendered dynamically via JavaScript -->
-      </div>
-
-      <div class="menu-bottom-note text-center">
-        <span>Oat and almond milk available on request. All prices inclusive of taxes.</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= THE SPACE (ATMOSPHERE & LIGHT - ARCHITECTURAL REDESIGN) ================= -->
-  <section id="spaces" class="section spaces-section">
-    <div class="container">
-      <div class="spaces-header-row reveal-fade">
-        <div>
-          <span class="editorial-label">ARCHITECTURAL ENVIRONMENT</span>
-          <h2 class="section-title">Atmosphere & Light</h2>
-        </div>
-        <p class="spaces-header-sub">
-          Terrazzo flooring, cane joinery, tropical monstera courtyards, and warm morning sun on 12th Main.
-        </p>
-      </div>
-
-      <!-- Architectural Asymmetric Photo Grid -->
-      <div class="spaces-architectural-grid">
-        <div class="space-card main-card reveal-fade">
-          <div class="space-img-wrap">
-            <img src="assets/images/cafe-interior.jpg" alt="The Sunlit Courtyard at Amara" loading="lazy">
-          </div>
-          <div class="space-info">
-            <span class="space-index">SPACE 01</span>
-            <h3 class="space-title">The Sunlit Courtyard & Reading Nook</h3>
-            <p class="space-desc">High glass ceilings, filtered tropical light, and communal walnut seating.</p>
-          </div>
-        </div>
-
-        <div class="space-card companion-card reveal-fade delay-1">
-          <div class="space-img-wrap">
-            <img src="assets/images/coffee-cup.jpg" alt="The Brew Bar" loading="lazy">
-          </div>
-          <div class="space-info">
-            <span class="space-index">SPACE 02</span>
-            <h3 class="space-title">The Slow Brew Counter</h3>
-            <p class="space-desc">Manual pour-overs and single-origin tastings directly with our baristas.</p>
-          </div>
-        </div>
-
-        <div class="space-card companion-card reveal-fade delay-2">
-          <div class="space-img-wrap">
-            <img src="assets/images/bakery-croissant.jpg" alt="The Morning Bakehouse" loading="lazy">
-          </div>
-          <div class="space-info">
-            <span class="space-index">SPACE 03</span>
-            <h3 class="space-title">The Hearth & Morning Bakery</h3>
-            <p class="space-desc">Laminated butter viennoiserie, sourdough loaves, and hearth plates.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= TABLE RESERVATION (CONCIERGE CARD STYLE) ================= -->
-  <section id="reserve" class="section reserve-section">
-    <div class="container">
-      <div class="concierge-booking-card reveal-fade">
-        <div class="concierge-top">
-          <div class="concierge-badge">CONCIERGE TABLE DESK</div>
-          <h2 class="concierge-title">Book a Table at AMARA</h2>
-          <p class="concierge-desc">
-            Reserve for morning breakfast, slow coffee meetings, or afternoon tea. Instant confirmation.
-          </p>
-        </div>
-
-        <form id="conciergeForm" class="concierge-form">
-          <!-- Step 1: Party Size Pills -->
-          <div class="booking-step">
-            <label class="step-label"><span class="step-num">1</span> Select Guests</label>
-            <div class="guest-pill-group">
-              <label class="guest-pill">
-                <input type="radio" name="guestCount" value="1">
-                <span>1 Person</span>
-              </label>
-              <label class="guest-pill">
-                <input type="radio" name="guestCount" value="2" checked>
-                <span>2 Guests</span>
-              </label>
-              <label class="guest-pill">
-                <input type="radio" name="guestCount" value="3">
-                <span>3 Guests</span>
-              </label>
-              <label class="guest-pill">
-                <input type="radio" name="guestCount" value="4">
-                <span>4 Guests</span>
-              </label>
-              <label class="guest-pill">
-                <input type="radio" name="guestCount" value="6+">
-                <span>6+ Group</span>
-              </label>
-            </div>
-          </div>
-
-          <!-- Step 2: Date & Time -->
-          <div class="booking-step">
-            <label class="step-label"><span class="step-num">2</span> Date & Preferred Time</label>
-            <div class="date-time-row">
-              <div class="field-wrap date-wrap">
-                <input type="date" id="bookDate" required>
-              </div>
-              <div class="field-wrap time-wrap">
-                <select id="bookTime" required>
-                  <option value="08:30 AM">08:30 AM · Morning Brew</option>
-                  <option value="11:00 AM" selected>11:00 AM · Brunch & Bakes</option>
-                  <option value="01:30 PM">01:30 PM · Lunch & Coffee</option>
-                  <option value="04:30 PM">04:30 PM · Afternoon Pour-Over</option>
-                  <option value="07:00 PM">07:00 PM · Evening Sips</option>
-                </select>
-              </div>
-              <div class="field-wrap area-wrap">
-                <select id="bookArea">
-                  <option value="Sunlit Courtyard" selected>Sunlit Courtyard</option>
-                  <option value="Indoor Main Room">Indoor Main Room</option>
-                  <option value="Brew Bar Counter">Brew Bar Counter</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- Step 3: Contact Details -->
-          <div class="booking-step">
-            <label class="step-label"><span class="step-num">3</span> Your Contact Information</label>
-            <div class="contact-inputs-row">
-              <input type="text" id="clientName" placeholder="Your Name" required class="concierge-input">
-              <input type="tel" id="clientPhone" placeholder="WhatsApp / Phone (+91 ...)" required class="concierge-input">
-            </div>
-          </div>
-
-          <button type="submit" class="btn btn-primary btn-block concierge-submit-btn">
-            <span>Confirm Table Reservation</span>
-            <i class="fa-solid fa-arrow-right"></i>
-          </button>
-          <div class="booking-reassurance">No deposit required. Walk-ins are always warmly welcomed.</div>
-        </form>
       </div>
     </div>
   </section>
@@ -356,7 +384,7 @@
         <i class="fa-regular fa-circle-check"></i>
       </div>
       <h3 class="modal-title">Table Confirmed</h3>
-      <p class="modal-sub">We have reserved your seat at AMARA Indiranagar.</p>
+      <p class="modal-sub">We have reserved your seat at AMARA.</p>
 
       <div class="ticket-simple" id="ticketDetailsBox">
         <!-- Injected via JavaScript -->
@@ -380,10 +408,10 @@
         <div class="footer-col">
           <h4>Sanctuary</h4>
           <ul class="footer-nav">
-            <li><a href="#story">Our Story</a></li>
             <li><a href="#menu">Daily Menu</a></li>
             <li><a href="#spaces">The Space</a></li>
-            <li><a href="#reserve">Table Reservations</a></li>
+            <li><a href="#reserve">Reservations</a></li>
+            <li><a href="#story">Our Story</a></li>
           </ul>
         </div>
 
