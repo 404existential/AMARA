@@ -436,6 +436,61 @@ document.addEventListener('DOMContentLoaded', () => {
   drawerLinks.forEach(link => link.addEventListener('click', closeDrawer));
   if (drawerReserveBtn) drawerReserveBtn.addEventListener('click', closeDrawer);
 
+  /* Direct Hero Action Buttons */
+  const heroMenuBtn = document.getElementById('heroMenuBtn');
+  const heroReserveBtn = document.getElementById('heroReserveBtn');
+
+  if (heroMenuBtn) {
+    heroMenuBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const menuSection = document.getElementById('menu');
+      if (menuSection) {
+        const headerHeight = header ? header.offsetHeight : 80;
+        const top = menuSection.getBoundingClientRect().top + window.pageYOffset - (headerHeight - 8);
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    });
+  }
+
+  if (heroReserveBtn) {
+    heroReserveBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const reserveSection = document.getElementById('reserve');
+      if (reserveSection) {
+        const headerHeight = header ? header.offsetHeight : 80;
+        const top = reserveSection.getBoundingClientRect().top + window.pageYOffset - (headerHeight - 8);
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    });
+  }
+
+  /* Smooth scroll for anchor links with navbar offset */
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const targetId = this.getAttribute('href');
+      if (targetId && targetId !== '#') {
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          e.preventDefault();
+          const headerHeight = header ? header.offsetHeight : 80;
+          const elementPosition = targetElement.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - (headerHeight - 8);
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+
+          if (history.pushState) {
+            history.pushState(null, null, targetId);
+          } else {
+            location.hash = targetId;
+          }
+        }
+      }
+    });
+  });
+
 
 
 

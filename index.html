@@ -14,7 +14,7 @@
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=2">
 </head>
 <body class="beige-theme">
 
@@ -118,9 +118,9 @@
           <span class="title-italic">Unhurried Living</span>
         </h1>
 
-        <div class="hero-cta-group">
-          <a href="#menu" class="btn btn-primary hero-btn">Explore Menu</a>
-          <a href="#reserve" class="btn btn-outline hero-btn">Reserve a Table</a>
+        <div class="hero-cta-group" style="position: relative; z-index: 100; pointer-events: auto;">
+          <a href="#menu" id="heroMenuBtn" class="btn btn-primary hero-btn" style="position: relative; z-index: 101; pointer-events: auto !important; cursor: pointer;">Explore Menu</a>
+          <a href="#reserve" id="heroReserveBtn" class="btn btn-outline hero-btn" style="position: relative; z-index: 101; pointer-events: auto !important; cursor: pointer;">Reserve a Table</a>
         </div>
       </div>
     </div>
@@ -432,6 +432,6 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <!-- JavaScript -->
-  <script src="app.js"></script>
+  <script src="app.js?v=2"></script>
 </body>
 </html>
